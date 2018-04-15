@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+		<title>{% if LANGUAGE_CODE == 'ro' %}Publicații{% else %}Publications{% endif %} | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro/publicatii/">
+		<meta name="robots" content="index, follow">
+{% endblock meta %}
+
+{% block bodyclass %}publications{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container clearfix">
+			<h1 class="ga_title">{% if LANGUAGE_CODE == 'ro' %}Publicații{% else %}Publications{% endif %}</h1>
+			<div id="sidebar" class="left grid_4 alpha">
+				<h3 id="sidebar_title" class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Navigare rapidă{% else %}Quick navigation{% endif %}</h3>
+				{% regroup publications by year as year_list %}
+				<ul id="archives">
+				{% for y in year_list reversed %}
+				<li class="archivesli">
+					<a href="#y_{{ y.grouper }}">{{ y.grouper }}</a>
+				</li>
+				{% endfor %}
+				</ul>
+			</div>
+			<div id="main" class="right grid_12 omega">
+				{% if publications %}
+					<div id="publications_list">
+						{% if user.is_authenticated %}
+							<p><a id="hti_link" href="{% url publication %}">{% if LANGUAGE_CODE == 'ro' %}Adaugă publicație nouă{% else %}Add new publication{% endif %}</a></p><br>
+						{% endif %}
+						{% regroup publications by year as year_list %}
+						{% for y in year_list reversed %}
+							<h4 id="y_{{ y.grouper }}" class="pub_year"><b>{{ y.grouper }}</b></h4>
+							{% for p in y.list %}
+								<article class="article_listing clearfix">
+									[{{ p.gen.name }}]
+									 <span class="authors">{% for a in p.authors.all %}{{ a.name|upper }}, {{ a.first_name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% if p.oauthors %}, {{ p.oauthors|striptags }}{% endif %}</span>, {% if p.book %}<cite>{% if p.url %}<a href="{{ p.url }}" class="darkgreen">{{ p.title|striptags }}</a>{% else %}{{ p.title|striptags }}{% endif %}</cite>{% if p.publisher %}, {{ p.publisher }}{% endif %}{% if p.city %}, {{ p.city }}{% endif %}{% if p.year %}, {{ p.year }}{% endif %}{% else %}"{% if p.url %}<a href="{{ p.url }}" class="darkgreen">{{ p.title|striptags }}</a>{% else %}{{ p.title|striptags }}{% endif %}"{% if p.review %}, <cite>{{ p.review|striptags }}</cite>{% elif p.conference %}, <cite>{{ p.conference|striptags }}</cite>{% endif %}{% if p.year %}, {{ p.year }}{% endif %}{% if p.pp %}, pp. {{ p.pp }}{% endif %}{% endif %}
+									{% if p.other %}
+										{{ p.other|safe }}
+									{% endif %}
+									{% if p.abstract %}
+										<div class="accordion_abstract">
+											<p class="pseudolabel accordion_title"><b><i>{% if LANGUAGE_CODE == 'ro' %}Rezumat:{% else %}Abstract:{% endif %}</i></b></p>
+											<div class="accordion_content">
+												{{ p.abstract|safe }}
+											</div>
+										</div>
+									{% endif %}
+									{% if user.is_authenticated %}
+										{% if m in p.authors.all or user.is_superuser %}
+											<p><a class="salmon" href="/publicatii/editeaza/{{ p.id }}/">{% if LANGUAGE_CODE == 'ro' %}Editează publicația{% else %}Edit publication{% endif %}</a></p>
+										{% endif %}
+									{% endif %}
+								</article>
+							{% endfor %}
+							<p class="top_link"><a href="#sidebar_title" class="darkgreen">{% if LANGUAGE_CODE == 'ro' %}Sus{% else %}Up{% endif %}</a></p>
+						{% endfor %}
+					</div>
+				{% endif %}
+			</div>
+		</div>
+{% endblock content %}

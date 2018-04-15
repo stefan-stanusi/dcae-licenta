@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load announcements_tags %}
+{% load pagination_tags %}
+
+{% block meta %}
+		<title>{% if LANGUAGE_CODE == 'ro' %}Anunțuri și evenimente{% else %}Announcements and events{% endif %} | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro/anunturi/">
+		<meta name="robots" content="index, follow">
+{% endblock meta %}
+
+{% block bodyclass %}announcements{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container clearfix">
+			<h1 class="ga_title">{% if LANGUAGE_CODE == 'ro' %}Anunțuri și evenimente{% else %}Announcements and Events{% endif %}</h1>
+			<div id="sidebar" class="left grid_4 alpha">
+				<h3 id="sidebar_title" class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Sortare articole{% else %}Article sorting{% endif %}</h3>
+				<p><b><a href="{% url announcements %}">{% if LANGUAGE_CODE == 'ro' %}Toate{% else %}All{% endif %}</a></b></p>
+				{% get_announcement_archives as archives %}
+				{% for year in archives %}
+				{% if forloop.first %}<ul id="archives">{% endif %}
+					<li class="archivesli">
+						<p class="archivesy">{{ year.0 }}</p>
+						<ul class="archives_months">
+							{% for month in year.1 %}
+							<li class="archives_month"><a href="/anunturi/{{ year.0 }}/{{ month|date:'m' }}/">{{ month|date:"F" }}</a></li>
+							{% endfor %}
+						</ul>
+					</li>
+				{% if forloop.last %}</ul>{% endif %}
+				{% endfor %}
+			</div>
+			<div id="main" class="right grid_12 omega">
+			{% if announcements %}
+			<h3 class="heading_bg salmon">{% if LANGUAGE_CODE == 'ro' %}Toate anunțurile și evenimentele{% else %}All announcements and events{% endif %}</h3>
+			{% autopaginate announcements 5 %}
+				<div id="announcement_list">
+				{% for a in announcements %}
+					<article class="article_listing clearfix">
+					<div class="al_image left grid_4 alpha">
+							<a href="{{ a.get_absolute_url }}">
+								<img src="{% if a.image %}{{ a.thumbnail.url }}{% elif a.img_url %}{{ a.remote_image_url }}{% endif %}" alt="{{ a.title }}" width="220" height="160">
+							</a>
+						</div>
+					{% if a.image or a.img_url %}
+						<div class="al_text right omega">
+							<h2 class="al_title"><a href="{{ a.get_absolute_url }}">{{ a.title }}</a></h2>
+							<section class="al_summary">
+								{% if a.evsdate or a.evedate %}
+								<p class="als_event">
+								{% if LANGUAGE_CODE == 'ro' %}
+								{% if a.evsdate %}{{ a.evsdate|date:'d F Y' }} ora: {{ a.evsdate|date:'H:i' }}{% endif %}
+								{% if a.evedate %} &ndash; {% if a.evsdate|date:'d F Y' == a.evedate|date:'d F Y' %} {{ a.evedate|date:'H:i' }}{% else %}{{ a.evsdate|date:'d F Y' }} ora: {{ a.evsdate|date:'H:i' }}{% endif %}{% endif %}
+								{% else %}
+								{% if a.evsdate %}{{ a.evsdate|date:'F d, Y' }} H: {{ a.evsdate|date:'H:i' }}{% endif %}
+								{% if a.evedate %} &ndash; {% if a.evsdate|date:'F d., Y' == a.evedate|date:'F d, Y' %} {{ a.evedate|date:'H:i' }}{% else %}{{ a.evsdate|date:'F d, Y' }} H: {{ a.evsdate|date:'H:i' }}{% endif %}{% endif %}
+								{% endif %}
+								</p>
+								{% endif %}
+								<div class="alst_text">
+									{{ a.text|safe|truncatewords_html:30 }}
+								</div>
+								<p><a class="als_details salmon" href="{{ a.get_absolute_url }}">{% if LANGUAGE_CODE == 'ro' %}Mai multe detalii{% else %}Details{% endif %} &raquo;</a></p>
+							</section>
+						</div>
+					{% else %}
+						<div class="al_text_no_img">
+							<h2 class="al_title"><a href="{{ a.get_absolute_url }}">{{ a.title }}</a></h2>
+							<section class="al_summary">
+								{% if a.evsdate or a.evedate %}
+								<p class="als_event">
+								{% if LANGUAGE_CODE == 'ro' %}
+								{% if a.evsdate %}{{ a.evsdate|date:'d F Y' }} ora: {{ a.evsdate|date:'H:i' }}{% endif %}
+								{% if a.evedate %} &ndash; {% if a.evsdate|date:'d F Y' == a.evedate|date:'d F Y' %} {{ a.evedate|date:'H:i' }}{% else %}{{ a.evsdate|date:'d F Y' }} ora: {{ a.evsdate|date:'H:i' }}{% endif %}{% endif %}
+								{% else %}
+								{% if a.evsdate %}{{ a.evsdate|date:'F d, Y' }} H: {{ a.evsdate|date:'H:i' }}{% endif %}
+								{% if a.evedate %} &ndash; {% if a.evsdate|date:'F d., Y' == a.evedate|date:'F d., Y' %} {{ a.evedate|date:'H:i' }}{% else %}{{ a.evsdate|date:'F d., Y' }} H: {{ a.evsdate|date:'H:i' }}{% endif %}{% endif %}
+								{% endif %}
+								</p>
+								{% endif %}
+								<div class="alst_text">
+									{{ a.text|safe|truncatewords_html:30 }}
+								</div>
+								<p><a class="als_details salmon" href="{{ a.get_absolute_url }}">{% if LANGUAGE_CODE == 'ro' %}Mai multe detalii{% else %}Details{% endif %} &raquo;</a></p>
+							</section>
+						</div>
+					{% endif %}
+					</article>
+				{% endfor %}
+				</div>
+				{% paginate %}
+			{% else %}
+
+		{% endif %}
+			</div>
+		</div>
+{% endblock content %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+		<title>{{ p.name }} | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro{{ p.get_absolute_url }}">
+		<meta name="robots" content="index, follow">
+{% endblock meta %}
+
+{% block bodyclass %}course{% endblock bodyclass %}
+
+
+{% block content %}
+		<div class="page container clearfix">
+			<h2 class="ga_title">{% if LANGUAGE_CODE == 'ro' %}Proiecte{% else %}Projects{% endif %}</h2>
+			<div id="sidebar" class="left grid_4 alpha">
+				<h3 id="sidebar_title" class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Toate proiectele{% else %}All projects{% endif %}</h3>
+				{% if projects %}
+					<ul id="archives">
+						{% for cs in projects %}
+							<li class="archivesli">
+								<a href="{{ cs.get_absolute_url }}">{{ c.slug|upper }}</a>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</div>
+			<div id="main" class="right grid_12 omega">
+				<h3 class="heading_bg salmon clearfix">
+					<a id="back_link" class="darkgreen right" href="{% url projects %}">&lt; {% if LANGUAGE_CODE == 'ro' %}Înapoi{% else %}Back{% endif %}</a>
+				</h3>
+				<article class="article_single clearfix">
+					<h1 class="al_title">{{ p.name }} {% if p.url %}<br><span><a href="{{ p.url }}" class="salmon">[{% if LANGUAGE_CODE == 'ro' %}Pagina proiectului{% else %}Project's page{% endif %}]</a></span>{% endif %}</h1>
+					<div class="article_text">
+
+						{% if p.coordinators.all %}<p><b>{% if LANGUAGE_CODE == 'ro' %}Coordonat de{% else %}Coordinated by{% endif %}</b>: {% for m in p.coordinators.all %}{% if m.public %}<a href="{{ m.get_absolute_url }}">{{ m.get_full_name }}</a>{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}</p>{% endif %}
+
+						{% if p.people.all %}<p><b>{% if LANGUAGE_CODE == 'ro' %}Alți membri ai departamentului implicați în acest proiect{% else %}Other department members involved in this project{% endif %}</b>: {% for m in p.people.all %}{% if m.public %}<a href="{{ m.get_absolute_url }}">{{ m.get_full_name }}</a>{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}</p>{% endif %}
+
+						{% if p.other %}
+							<p class="pseudolabel"><b>{% if LANGUAGE_CODE == 'ro' %}Persoane din afara departamentului implicate în acest proiect:{% else %}Other persons involved in the project{% endif %}</b></p>
+							{{ p.other|safe }}
+						{% endif %}
+
+						{% if p.description %}
+							<p class="pseudolabel"><b>{% if LANGUAGE_CODE == 'ro' %}Descriere{% else %}Description{% endif %}:</b></p>
+							{{ p.description|safe }}
+						{% endif %}
+					</div>
+				</article>
+			</div>
+		</div>
+{% endblock content %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+		<title>{% if LANGUAGE_CODE == 'ro' %}Traduceți titlul academic{% else %}Translate your Academic title{% endif %} | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro/accounts/profile/translate/title/">
+		<meta name="robots" content="noindex, nofollow">
+{% endblock meta %}
+
+{% block bodyclass %}translate_title{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container">
+			<article id="about_page" class="generic_article">
+				<h1 class="ga_title">{% if LANGUAGE_CODE == 'ro' %}Traduceți titlul academic{% else %}Translate your Academic title{% endif %}</h1>
+				<section class="ga_content clearfix">
+					{% if perms %}
+						<div>{{ form.non_field_errors }}</div>
+								{% if form.errors %}
+									<ul>
+										{% for error in form.errors %}
+											<li>{{ error }}</li>
+										{% endfor %}
+									</ul>
+								{% endif %}
+						<form enctype="multipart/form-data" action="" method="post" id="keyvalue_form">
+							{% csrf_token %}
+							<input type="hidden" name="content_type" id="id_content_type" value="{{ ct }}">
+							<input type="hidden" name="object_id" id="id_object_id" value="{{ m.id }}">
+							<input type="hidden" name="field" id="id_field" value="title">
+							<input type="hidden" name="language" id="id_language" value="en">
+							<input type="hidden" name="edited" id="id_edited">
+							<input type="hidden" name="fuzzy" id="id_fuzzy">
+							<input type="hidden" name="digest" id="id_digest" value="{{ formdata.digest }}">
+							<div>
+								<b>{% if LANGUAGE_CODE == 'ro' %}Versiunea română{% else %}Romanaian version{% endif %}:</b><br>
+								{{ m.title|safe }}
+							</div><br>
+							<p>
+								<label for="id_value">{% if LANGUAGE_CODE == 'ro' %}Traduceți{% else %}Translate{% endif %}:</label><br>
+								<textarea id="id_value" rows="10" cols="40" name="value">{{ formdata.value }}</textarea>
+							</p>
+							<p><input type="submit" id="hti_link" value="{% if LANGUAGE_CODE == 'ro' %}Salvați{% else %}Save{% endif %}"></p>
+						</form>
+					{% else %}
+						<p>{% if LANGUAGE_CODE == 'ro' %}Nu aveți permisiunea de a edita traduceri. Vă rugăm contactați administratorii sitului.{% else %}You don't have the permission of editing translations. Please contact the website's administrators.{% endif %}</p>
+					{% endif %}
+				</section>
+			</article>
+		</div>
+{% endblock content %}
+
+{% block scripts %}
+		<script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/tinymce.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/tinymce_init.js"></script>
+{% endblock scripts %}

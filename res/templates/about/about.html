@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+		<title>{{ d.title }} | DCAE</title>
+		<meta name="description" content="{{ d.text|truncatechars:157 }}">
+		<link rel="canonical" href="http://www.dcae.pub.ro/despre/">
+		<meta name="robots" content="index, follow">
+{% endblock meta %}
+
+{% block bodyclass %}about{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container">
+			<article id="about_page" class="generic_article">
+				<h1 class="ga_title">{{ d.title }}</h1>
+				<section class="ga_content clearfix">
+					{% if d.image %}
+						<img class="inlineblock alignright" src="{{ d.image.url }}" alt="{{ d.title }}" width="{{ d.image.width }}" height="{{ d.image.height }}">
+					{% endif %}
+					{{ d.text|safe }}
+				</section>
+			</article>
+		</div>
+{% endblock content %}

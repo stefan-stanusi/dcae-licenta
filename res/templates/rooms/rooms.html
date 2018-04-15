@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+		<title>{% if LANGUAGE_CODE == 'ro' %}Săli{% else %}Rooms{% endif %} | DCAE</title>
+		<meta name="description" content="Sălile în care se desfășoară cursurile și laboratoarele departamentului DCAE">
+		<link rel="canonical" href="http://www.dcae.pub.ro/sali/">
+		<meta name="robots" content="index, follow">
+{% endblock meta %}
+
+{% block bodyclass %}rooms{% endblock bodyclass %}
+
+
+{% block content %}
+		<div class="page container clearfix">
+			<h1 class="ga_title">{% if LANGUAGE_CODE == 'ro' %}Săli{% else %}Rooms{% endif %}</h1>
+			<div id="sidebar" class="left grid_4 alpha">
+				{% if courses %}
+					<h3 class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Cursuri{% else %}Courses{% endif %}</h3>
+					<ul id="archives">
+						{% for c in courses %}
+							<li class="archivesli">
+								<a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+							</li>
+						{% endfor %}
+						<li class="archivesli">
+							<b><a href="{% url courses %}">{% if LANGUAGE_CODE == 'ro' %}Vezi toate cursurile{% else %}View all courses{% endif %}</a></b>
+						</li>
+					</ul><br />
+				{% endif %}
+				{% if labs %}
+					<h3 class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Laboratoare{% else %}Laboratories{% endif %}</h3>
+					<ul id="archives">
+						{% for c in labs %}
+							<li class="archivesli">
+								<a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+							</li>
+						{% endfor %}
+						<li class="archivesli">
+							<b><a href="{% url labs %}">{% if LANGUAGE_CODE == 'ro' %}Vezi toate laboratoarele{% else %}View all laboratories{% endif %}</a></b>
+						</li>
+					</ul>
+				{% endif %}
+				{% if rooms %}
+					<h3 class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Săli{% else %}Rooms{% endif %}</h3>
+					<ul id="archives">
+						{% for c in rooms %}
+							<li class="archivesli">
+								<a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</div>
+			<div id="main" class="right grid_12 omega">
+				{% if rooms %}
+					{% for r in rooms %}
+					<article class="article_listing clearfix">
+						<h2 class="alt_title"><a class="darkgreen" href="{{ r.get_absolute_url }}">{{ r.name }}</a></h2>
+						{% if r.description %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Informații{% else %}Information{% endif %}</b></p>
+							{{ r.description|safe|truncatewords_html:20 }}
+						{% endif %}
+
+						{% if r.members.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}În această sală îi puteți găsi pe:{% else %}In this room, you can find:{% endif %}</b></p>
+							<ul>
+								{% for m in r.members.all %}
+									{% if m.public %}
+										<li>
+											<a class="darkgreen" href="{{ m.get_absolute_url }}">{% if c.r.shortname %}{{ c.r.shortname }}{% endif %} {{ m.get_full_name }}</a>
+										</li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+						{% endif %}
+
+						{% if r.courses.all %}
+							<h4>{% if LANGUAGE_CODE == 'ro' %}Cursuri{% else %}Courses{% endif %}</h4>
+							<ul>
+								{% for c in r.courses.all %}
+									{% if c.public %}
+										<li>
+											<a class="darkgreen" href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+										</li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+						{% endif %}
+
+						{% if r.labs.all %}
+							<h4>{% if LANGUAGE_CODE == 'ro' %}Laboratoare{% else %}Laboratories{% endif %}</h4>
+							<ul>
+								{% for l in r.labs.all %}
+									{% if l.public %}
+										<li>
+											<a class="darkgreen" href="{{ l.get_absolute_url }}">{{ l.name }}</a>
+										</li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+						{% endif %}
+
+						{% if r.program %}
+							<p><a class="smaller gray" href="{{ r.get_absolute_url }}">{% if LANGUAGE_CODE == 'ro' %}Orarul sălii{% else %}Room's schedule{% endif %}</a></p>
+						{% else %}
+							<p><a class="smaller gray" href="{{ r.get_absolute_url }}">{% if LANGUAGE_CODE == 'ro' %}Vezi detalii{% else %}View details{% endif %}</a></p>
+						{% endif %}
+					</article>
+					{% endfor %}
+				{% else %}
+					<article class="article_listing clearfix">
+						<p>
+							{% if LANGUAGE_CODE == 'ro' %}
+								Pentru moment nu a fost adăugată nicio sală.
+							{% else %}
+								No room has been added yet.
+							{% endif %}
+						</p>
+					</article>
+				{% endif %}
+			</div>
+		</div>
+{% endblock content %}

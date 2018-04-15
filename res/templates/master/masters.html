@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load pagination_tags %}
+
+{% block meta %}
+		<title>{% if LANGUAGE_CODE == 'ro' %}Programe master{% else %}Master programmes{% endif %} | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro/master/">
+		<meta name="robots" content="index, follow">
+{% endblock meta %}
+
+{% block bodyclass %}courses{% endblock bodyclass %}
+
+
+{% block content %}
+		<div class="page container clearfix">
+			<h1 class="ga_title">{% if LANGUAGE_CODE == 'ro' %}Programe master{% else %}Master programmes{% endif %}</h1>
+			<div id="sidebar" class="left grid_4 alpha">
+				<h3 id="sidebar_title" class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Toate programele{% else %}All programmes{% endif %}</h3>
+				{% if masters %}
+					<ul id="archives">
+						{% for c in masters %}
+							<li class="archivesli">
+								<a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</div>
+			<div id="main" class="right grid_12 omega">
+				{% if masters %}
+					{% autopaginate masters 10 %}
+					<div id="announcement_list">
+						{% for c in masters %}
+							<article class="article_listing clearfix">
+								<div class="al_text_no_img">
+									<h2 class="al_title"><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></h2>
+									<section class="al_summary">
+										{% if c.studies %}
+											<p class="pseudolabel"><b>{% if LANGUAGE_CODE == 'ro' %}Direcții de studiu{% else %}Study directions{% endif %}</b></p>
+											{{ c.studies|safe }}
+										{% endif %}
+										<p><a class="als_details salmon" href="{{ c.get_absolute_url }}">{% if LANGUAGE_CODE == 'ro' %}Mai multe detalii{% else %}Details{% endif %} &raquo;</a></p>
+									</section>
+								</div>
+							</article>
+						{% endfor %}
+					</div>
+					{% paginate %}
+				{% else %}
+					{% if LANGUAGE_CODE == 'ro' %}Pentru moment, nu a fost adăugat niciun articol. Vă rugăm încercați mai târziu.{% else %}No article has been added yet. Please check again later.{% endif %}
+				{% endif %}
+			</div>
+		</div>
+{% endblock content %}

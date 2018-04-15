@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+		<title>{{ r.name }} | DCAE</title>
+		<meta name="description" content="{% if r.description %}{{ r.description|striptags|truncatewords_html:20 }}{% endif %}">
+		<link rel="canonical" href="http://www.dcae.pub.ro{{ r.get_absolute_url }}">
+		<meta name="robots" content="index, follow">
+{% endblock meta %}
+
+{% block bodyclass %}rooms{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container clearfix">
+			<h2 class="ga_title">{{ r.name }}</h2>
+			<div id="sidebar" class="left grid_4 alpha">
+				{% if courses %}
+					<h3 class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Cursuri{% else %}Courses{% endif %}</h3>
+					<ul id="archives">
+						{% for c in courses %}
+							<li class="archivesli">
+								<a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+							</li>
+						{% endfor %}
+						<li class="archivesli">
+							<b><a href="{% url courses %}">{% if LANGUAGE_CODE == 'ro' %}Vezi toate cursurile{% else %}View all courses{% endif %}</a></b>
+						</li>
+					</ul><br />
+				{% endif %}
+				{% if labs %}
+					<h3 class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Laboratoare{% else %}Laboratories{% endif %}</h3>
+					<ul id="archives">
+						{% for c in labs %}
+							<li class="archivesli">
+								<a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+							</li>
+						{% endfor %}
+						<li class="archivesli">
+							<b><a href="{% url labs %}">{% if LANGUAGE_CODE == 'ro' %}Vezi toate laboratoarele{% else %}View all laboratories{% endif %}</a></b>
+						</li>
+					</ul>
+				{% endif %}
+				{% if rooms %}
+					<h3 class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Săli{% else %}Rooms{% endif %}</h3>
+					<ul id="archives">
+						{% for c in rooms %}
+							<li class="archivesli">
+								<a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+							</li>
+						{% endfor %}
+						<li class="archivesli">
+							<b><a href="{% url rooms %}">{% if LANGUAGE_CODE == 'ro' %}Vezi toate sălile{% else %}View all rooms{% endif %}</a></b>
+						</li>
+					</ul>
+				{% endif %}
+			</div>
+			<div id="main" class="right grid_12 omega">
+				<h3 class="heading_bg salmon clearfix">
+					<a id="back_link" class="darkgreen right" href="{% url rooms %}">&lt; {% if LANGUAGE_CODE == 'ro' %}Înapoi{% else %}Back{% endif %}</a>
+				</h3>
+				{% if r %}
+					<div class="article_text">
+						{% if r.description %}
+							<h3 class="m_heading">{% if LANGUAGE_CODE == 'ro' %}Informații{% else %}Information{% endif %}</h3>
+							{{ r.description|safe }}
+						{% endif %}
+
+						{% if r.courses.all %}
+							<h3 class="m_heading">{% if LANGUAGE_CODE == 'ro' %}Cursurile care se desfășoară in această sală:{% else %}Courses taught in this room:{% endif %}</h3>
+							<ul>
+								{% for c in r.courses.all %}
+									{% if c.public %}
+										<li>
+											<a class="darkgreen" href="{{ c.get_absolute_url }}">{{ c.name }}{% if c.udergrad %} <span class="gray">{% if LANGUAGE_CODE == 'ro' %} [Curicul licență]{% else %}[Undergraduate curriculul]</span>{% endif %}{% elif c.m %} <span class="gray">[Master: {{ c.m.name }}]{% endif %}</a>
+										</li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+						{% endif %}
+
+						{% if r.labs.all %}
+							<h3 class="m_heading">{% if LANGUAGE_CODE == 'ro' %}Laboratoare care se desfășoară in această sală:{% else %}Laboratories taught in this room:{% endif %}</h3>
+							<ul>
+								{% for c in r.labs.all %}
+									{% if c.public %}
+										<li>
+											<a class="darkgreen" href="{{ c.get_absolute_url }}">{{ c.name }}{% if c.udergrad %} <span class="gray">{% if LANGUAGE_CODE == 'ro' %} [Curicul licență]{% else %}[Undergraduate curriculul]</span>{% endif %}{% elif c.m %} <span class="gray">[Master: {{ c.m.name }}]{% endif %}</a>
+										</li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+						{% endif %}
+
+						{% if r.members.all %}
+							<h3 class="m_heading">{% if LANGUAGE_CODE == 'ro' %}În această sală îi puteți găsi pe:{% else %}In this room, you can find:{% endif %}</h3>
+							<ul>
+								{% for c in r.members.all %}
+									{% if c.public %}
+										<li>
+											<a class="darkgreen" href="{{ c.get_absolute_url }}">{% if c.r.shortname %}{{ c.r.shortname }}{% endif %} {{ c.get_full_name }}</a>
+										</li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+						{% endif %}
+
+						{% if r.program %}
+							<h3 class="m_heading">{% if LANGUAGE_CODE == 'ro' %}Orarul sălii{% else %}Room's program{% endif %}</h3>
+							{{ r.program|safe }}
+						{% endif %}
+					</div>
+				{% endif %}
+			</div>
+		</div>
+{% endblock content %}

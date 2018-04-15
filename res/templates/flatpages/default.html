@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+		<title>{{ flatpage.title }} | DCAE</title>
+		<meta name="description" content="{{ flatpage.content|truncatechars:157 }}">
+		<link rel="canonical" href="http://www.dcae.pub.ro{{ flatpage.url }}">
+		<meta name="robots" content="index, follow">
+{% endblock meta %}
+
+{% block bodyclass %}page{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container">
+			<article id="about_page" class="generic_article">
+				<h1 class="ga_title">{{ flatpage.title }}</h1>
+				<section class="ga_content clearfix">
+					{{ flatpage.content|safe }}
+				</section>
+			</article>
+		</div>
+{% endblock content %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block meta %}
+		<title>Login | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro/membri/login/">
+		<meta name="robots" content="noindex, nofollow">
+{% endblock meta %}
+
+{% block bodyclass %}login{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container">
+			<article id="about_page" class="generic_article">
+				<h1 class="ga_title">Login</h1>
+				<section class="ga_content clearfix">
+					{% if form.errors %}
+					<p>{% if LANGUAGE_CODE == 'ro' %}Numele și parola nu se potrivesc. Vă rugăm reîncercați.{% else %}Your username and password didn't match. Please try again.{% endif %}</p>
+					{% endif %}
+
+					<form method="post" action="{% url login %}">
+						{% csrf_token %}
+						<div>
+							<p>{{ form.username.label_tag }}</p>
+							<p>{{ form.username }}</p>
+						</div>
+						<div>
+							<p>{{ form.password.label_tag }}</p>
+							<p>{{ form.password }}</p>
+						</div>
+
+						<input type="submit" id="hti_link" value="Login" />
+						<input type="hidden" name="next" value="{{ next }}" />
+					</form>
+					<p><a href="{% url password_reset %}">{% if LANGUAGE_CODE == 'ro' %}Ați uitat parola{% else %}Have you forgot your password{% endif %}?</a></p>
+				</section>
+			</article>
+		</div>
+
+{% endblock content %}

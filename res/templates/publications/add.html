@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+		<title>{% if LANGUAGE_CODE == 'ro' %}Adaugă publicații{% else %}Add publication{% endif %} | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro/publicatii/adauga/">
+		<meta name="robots" content="noindex, nofollow">
+{% endblock meta %}
+
+{% block bodyclass %}publication_add{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container">
+			<article id="about_page" class="generic_article">
+				<h1 class="ga_title">{% if LANGUAGE_CODE == 'ro' %}Adaugă publicații{% else %}Add publication{% endif %}</h1>
+				<section class="ga_content clearfix">
+					<form id="publication_edit" method="post">
+						<div>{{ form.non_field_errors }}</div>
+						{% if form.errors %}
+							<ul>
+								{% for error in form.errors %}
+									<li>{{ error }}</li>
+								{% endfor %}
+							</ul>
+						{% endif %}
+						{% csrf_token %}
+						<p>
+							<label for="id_gen"><b>{% if LANGUAGE_CODE == 'ro' %}Genul lucrării{% else %}Publication's type{% endif %}: <span class="required">*</span></b></label><br>
+							<select name="gen" id="id_gen">
+								<option value="" selected="selected">---------</option>
+								{% for g in genres %}
+									<option value="{{ g.id }}">{{ g.name }}</option>
+								{% endfor %}
+							</select>
+						</p>
+						<p>
+							<label for="id_authors"><b>{% if LANGUAGE_CODE == 'ro' %}Autorii lucrării (membri ai departamentului){% else %}Publication's authors (Department's members){% endif %}: <span class="required">*</span></b></label><br>
+							<span class="smaller">{% if LANGUAGE_CODE == 'ro' %}Țineți apăsată tasta "Control" sau "Command" pentru o selecție multiplă{% else %}Press "Control" or "Command" key for a multiple selection{% endif %}</span><br>
+							<select name="authors" id="id_authors" multiple="multiple">
+								{% for g in members %}
+									<option value="{{ g.id }}">{{ g.get_full_name }}</option>
+								{% endfor %}
+							</select>
+						</p>
+						<p>
+							<label for="id_oauthors">{% if LANGUAGE_CODE == 'ro' %}Alți autori (dacă nu sunt membri ai departamentului){% else %}Other authors (in case they're not members of the Department){% endif %}, e.g. DOE, John, DOE, Jane:</label><br>
+							<textarea id="id_oauthors" rows="10" cols="40" name="oauthors"></textarea><br>
+						</p>
+						<p>
+							<label for="id_title"><b>{% if LANGUAGE_CODE == 'ro' %}Titlu{% else %}Title{% endif %}: <span class="required">*</span></b></label><br>
+							<textarea id="id_title" rows="10" cols="40" name="title"></textarea>
+						</p>
+						<p>
+							<label for="id_publisher">{% if LANGUAGE_CODE == 'ro' %}Editura{% else %}Publishing house{% endif %}:</label><br>
+							<input id="id_publisher" type="text" name="publisher" maxlength="255">
+						</p>
+						<p>
+							<label for="id_city">{% if LANGUAGE_CODE == 'ro' %}Locul publicării (Orașul){% else %}City{% endif %}:</label><br>
+							<input id="id_city" type="text" name="city" maxlength="255">
+						</p>
+						<p>
+							<label for="id_review">{% if LANGUAGE_CODE == 'ro' %}Revista, e.g. <i>UBP Bulletin</i>, Seria C, vol. 74, nr. 3{% else %}Review, e.g. <i>UBP Bulletin</i>, Series C, Volume 74, Issue 3{% endif %}:</label><br>
+							<textarea id="id_review" rows="10" cols="40" name="review"></textarea>
+						</p>
+						<p>
+							<label for="id_conference">{% if LANGUAGE_CODE == 'ro' %}Conferința{% else %}Conference{% endif %}:</label><br>
+							<textarea id="id_conference" rows="10" cols="40" name="conference"></textarea>
+						</p>
+						<p>
+							<label for="id_pp">{% if LANGUAGE_CODE == 'ro' %}Paginile{% else %}Pages{% endif %}, e.g. 127-152:</label><br>
+							<input id="id_pp" type="text" name="pp" maxlength="100">
+						</p>
+						<p>
+							<label for="id_year"><b>{% if LANGUAGE_CODE == 'ro' %}Anul apariției{% else %}Publication year{% endif %}: <span class="required">*</span></b>:</label><br>
+							<input type="text" name="year" id="id_year">
+						</p>
+						<p><label for="id_book"><input type="checkbox" name="book" id="id_book">{% if LANGUAGE_CODE == 'ro' %}Bifați dacă publicația este o carte{% else %}Check if the publication is a book{% endif %}:</label><br>
+						</p>
+						<p>
+							<label for="id_abstract">{% if LANGUAGE_CODE == 'ro' %}Rezumat{% else %}Abstract{% endif %}:</label>
+							<textarea id="id_abstract" rows="10" cols="40" name="abstract"></textarea>
+						</p>
+						<p>
+							<label for="id_url">{% if LANGUAGE_CODE == 'ro' %}Link către document{% else %}Link to the document{% endif %}:</label><br>
+							<input id="id_url" type="text" name="url" maxlength="255">
+						</p>
+						<p>
+							<label for="id_other">{% if LANGUAGE_CODE == 'ro' %}Alte informații, e.g. link către o arhivă care conține datele cercetării, ori detalii despre modul în care a fost receptată publicația{% else %}Other info, e.g link to an archive containing the research data, or details concerning the publications's reception{% endif %}:</label><br>
+							<textarea id="id_other" rows="10" cols="40" name="other"></textarea>
+						</p>
+						<p style="display:none"><input type="checkbox" name="public" id="id_public"></p>
+						<p>{% if LANGUAGE_CODE == 'ro' %}Câmpurile marcate cu <span class="required">*</span> sunt obligatorii{% else %}Fields marked with <span class="required">*</span> are required{% endif %}.</p>
+						<input type="submit" id="hti_link" value="{% if LANGUAGE_CODE == 'ro' %}Salvează{% else %}Save{% endif %}">
+					</form>
+				</section>
+			</article>
+		</div>
+{% endblock content %}
+
+{% block scripts %}
+		<script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/tinymce.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/tinymce_init.js"></script>
+{% endblock scripts %}

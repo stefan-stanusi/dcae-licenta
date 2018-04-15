@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+		<title>{% if LANGUAGE_CODE == 'ro' %}Rezultatele căutării după {% else %}Search results for {% endif %}"{{ query }}" | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro/cautare/">
+		<meta name="robots" content="noindex, follow">
+{% endblock meta %}
+
+{% block bodyclass %}search{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container">
+			<h3 class="heading_bg salmon">{% if LANGUAGE_CODE == 'ro' %}Rezultatele căutării după {% else %}Search results for {% endif %}"{{ query }}"</h3>
+
+			{% if members %}
+				<h4>{% if LANGUAGE_CODE == 'ro' %}Membri{% else %}Members{% endif %}</h4>
+				{% for m in members %}
+					<article class="wide_article clearfix">
+						<h3 class="alt_title"><a class="darkgreen" href="{{ m.get_absolute_url }}">{% if m.r.shortname %}{{ m.r.shortname|capfirst }}. {% endif %}{{ m.get_full_name }}</a></h3>
+						<p><a class="smaller gray" href="{{ m.get_absolute_url }}">{% if LANGUAGE_CODE == 'ro' %}Vezi profilul{% else %}View profile{% endif %}</a></p>
+					</article>
+				{% endfor %}
+			{% endif %}
+
+			{% if projects %}
+			<h4>{% if LANGUAGE_CODE == 'ro' %}Proiecte de cercetare{% else %}Research projects{% endif %}</h4>
+				{% for p in projects %}
+					<article class="wide_article clearfix">
+						<h3 class="alt_title"><a class="darkgreen" href="{{ p.get_absolute_url }}">{{ p.name }}</a></h3>
+						{% if p.description %}
+							<h4>{% if LANGUAGE_CODE == 'ro' %}Descriere{% else %}Description{% endif %}</h4>
+							{{ p.description|safe|truncatewords_html:20 }}
+						{% endif %}
+					</article>
+				{% endfor %}
+			{% endif %}
+
+			{% if programmes %}
+				<h4>{% if LANGUAGE_CODE == 'ro' %}Programe Master{% else %}Master Programmes{% endif %}</h4>
+				{% for p in programmes %}
+					<article class="wide_article clearfix">
+						<h3 class="alt_title"><a class="darkgreen" href="{{ p.get_absolute_url }}">{{ p.name }}</a></h3>
+						{% if p.studies %}
+							<h4>{% if LANGUAGE_CODE == 'ro' %}Direcții de studiu{% else %}Study directions{% endif %}</h4>
+							{{ p.studies|safe|truncatewords_html:20 }}
+						{% endif %}
+						{% if p.description %}
+							<h4>{% if LANGUAGE_CODE == 'ro' %}Descriere{% else %}Description{% endif %}</h4>
+							{{ p.description|safe|truncatewords_html:20 }}
+						{% endif %}
+					</article>
+				{% endfor %}
+			{% endif %}
+
+			{% if courses %}
+				<h4>{% if LANGUAGE_CODE == 'ro' %}Cursuri{% else %}Courses{% endif %}</h4>
+				{% for c in courses %}
+					<article class="wide_article clearfix">
+						<h3 class="alt_title"><a class="darkgreen" href="{{ c.get_absolute_url }}">{{ c.name }}{% if c.udergrad %} <span class="gray">{% if LANGUAGE_CODE == 'ro' %}[Curicul licență]{% else %}[Undergraduate curriculul]</span>{% endif %}{% elif c.m %}<span class="gray">[Master: {{ c.m.name }}]{% endif %}</a></h3>
+						{% if m.description %}
+							<h4>{% if LANGUAGE_CODE == 'ro' %}Descriere{% else %}Description{% endif %}</h4>
+							{{ m.description|safe|truncatewords_html:20 }}
+						{% endif %}
+					</article>
+				{% endfor %}
+			{% endif %}
+
+			{% if labs %}
+				<h4>{% if LANGUAGE_CODE == 'ro' %}Laboratoare{% else %}Laboratories{% endif %}</h4>
+				{% for l in labs %}
+					<article class="wide_article clearfix">
+						<h3 class="alt_title"><a class="darkgreen" href="{{ l.get_absolute_url }}">{{ l.name }}{% if l.udergrad %} <span class="gray">{% if LANGUAGE_CODE == 'ro' %}[Curicul licență]{% else %}[Undergraduate curriculul]</span>{% endif %}{% elif l.m %}<span class="gray">[Master: {{ l.m.name }}]{% endif %}</a></h3>
+						{% if l.description %}
+							<h4>{% if LANGUAGE_CODE == 'ro' %}Descriere{% else %}Description{% endif %}</h4>
+							{{ l.description|safe|truncatewords_html:20 }}
+						{% endif %}
+					</article>
+				{% endfor %}
+			{% endif %}
+
+			{% if announcements %}
+			<h4>{% if LANGUAGE_CODE == 'ro' %}Anunțuri și evenimente{% else %}Announcements and events{% endif %}</h4>
+				{% for a in announcements %}
+					<article class="wide_article clearfix">
+						{% if a.image %}
+							<div class="al_image left grid_4 alpha">
+								<a href="{{ a.get_absolute_url }}">
+									<img src="{{ a.thumbnail.url }}" alt="{{ a.title }}" width="220" height="160">
+								</a>
+							</div>
+						{% elif a.img_url %}
+							<div class="al_image left grid_4 alpha">
+								<a href="{{ a.get_absolute_url }}">
+									<img src="{{ a.remote_image_url }}" alt="{{ a.title }}" width="220" height="160">
+								</a>
+							</div>
+						{% endif %}
+						{% if a.image or a.img_url %}
+							<div class="al_text_search right omega">
+								<h2 class="al_title"><a href="{{ a.get_absolute_url }}">{{ a.title }}</a></h2>
+								<section class="al_summary">
+									{% if a.evsdate or a.evedate %}
+										<p class="als_event">
+											{% if LANGUAGE_CODE == 'ro' %}
+												{% if a.evsdate %}{{ a.evsdate|date:'d F Y' }} ora: {{ a.evsdate|date:'H:i' }}{% endif %}
+												{% if a.evedate %} &ndash; {% if a.evsdate|date:'d F Y' == a.evedate|date:'d F Y' %} {{ a.evedate|date:'H:i' }}{% else %}{{ a.evsdate|date:'d F Y' }} ora: {{ a.evsdate|date:'H:i' }}{% endif %}{% endif %}
+											{% else %}
+												{% if a.evsdate %}{{ a.evsdate|date:'F d, Y' }} H: {{ a.evsdate|date:'H:i' }}{% endif %}
+												{% if a.evedate %} &ndash; {% if a.evsdate|date:'F d., Y' == a.evedate|date:'F d, Y' %} {{ a.evedate|date:'H:i' }}{% else %}{{ a.evsdate|date:'F d, Y' }} H: {{ a.evsdate|date:'H:i' }}{% endif %}{% endif %}
+											{% endif %}
+										</p>
+									{% endif %}
+									<div class="alst_text">
+										{{ a.text|safe|truncatewords_html:30 }}
+									</div>
+									<p>
+										<a class="als_details salmon" href="{{ a.get_absolute_url }}">
+											{% if LANGUAGE_CODE == 'ro' %}Mai multe detalii{% else %}Details{% endif %} &raquo;
+										</a>
+									</p>
+								</section>
+							</div>
+						{% else %}
+							<div class="al_text_no_img">
+								<h2 class="al_title"><a href="{{ a.get_absolute_url }}">{{ a.title }}</a></h2>
+								<section class="al_summary">
+									{% if a.evsdate or a.evedate %}
+										<p class="als_event">
+										{% if LANGUAGE_CODE == 'ro' %}
+											{% if a.evsdate %}{{ a.evsdate|date:'d F Y' }} ora: {{ a.evsdate|date:'H:i' }}{% endif %}
+											{% if a.evedate %} &ndash; {% if a.evsdate|date:'d F Y' == a.evedate|date:'d F Y' %} {{ a.evedate|date:'H:i' }}{% else %}{{ a.evsdate|date:'d F Y' }} ora: {{ a.evsdate|date:'H:i' }}{% endif %}{% endif %}
+										{% else %}
+											{% if a.evsdate %}{{ a.evsdate|date:'F d, Y' }} H: {{ a.evsdate|date:'H:i' }}{% endif %}
+											{% if a.evedate %} &ndash; {% if a.evsdate|date:'F d., Y' == a.evedate|date:'F d., Y' %} {{ a.evedate|date:'H:i' }}{% else %}{{ a.evsdate|date:'F d., Y' }} H: {{ a.evsdate|date:'H:i' }}{% endif %}{% endif %}
+										{% endif %}
+										</p>
+									{% endif %}
+									<div class="alst_text">
+										{{ a.text|safe|truncatewords_html:30 }}
+									</div>
+									<p>
+										<a class="als_details salmon" href="{{ a.get_absolute_url }}">
+											{% if LANGUAGE_CODE == 'ro' %}Mai multe detalii{% else %}Details{% endif %} &raquo;
+										</a>
+									</p>
+								</section>
+							</div>
+						{% endif %}
+					</article>
+				{% endfor %}
+			{% endif %}
+		</div>
+{% endblock content %}

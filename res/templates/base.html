@@ -1,0 +1,100 @@
+{% load cache %}
+{% load members_tags %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html dir="ltr" class="no-js" lang="{{ LANGUAGE_CODE }}">
+<!--[if lt IE 7]><html dir="ltr" class="no-js ie ie6 oldie" lang="{{ LANGUAGE_CODE }}"><![endif]-->
+<!--[if IE 7]><html dir="ltr" class="no-js ie ie7 oldie" lang="{{ LANGUAGE_CODE }}"><![endif]-->
+<!--[if IE 8]><html dir="ltr" class="no-js ie ie8 oldie" lang="{{ LANGUAGE_CODE }}"><![endif]-->
+<!--[if IE 9]><html dir="ltr" class="no-js ie" lang="{{ LANGUAGE_CODE }}"><![endif]-->
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		{% block meta %}
+		{% endblock meta %}
+		<link rel="shortcut icon" href="http://www.dcae.pub.ro/favicon.ico">
+		<!--[if lt IE 9]><script type="text/javascript" src="{{ STATIC_URL }}js/ie.js"></script><![endif]-->
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic,500,500italic,700,700italic,900,900italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/s.css">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/app.js"></script>
+		<script type="text/javascript">
+			var language = '{{ LANGUAGE_CODE }}';
+			$(document).ready(function(){
+				$('#language').find('a').each(function(){
+					var ti = jQuery(this).attr('title');
+					if (language == ti) {
+							$('#language').find('a').removeClass('selected');
+							$(this).addClass('selected');
+						}
+					$(this).on('click', function(e){
+						e.preventDefault();
+						$(this).removeClass('selected');
+						$('#id_langform').find('#id_language').val(ti);
+						$('body').find('#id_langform').submit();
+						console.log('foo');
+					});
+				});
+				var t = null;
+			});
+		</script>
+		{% block extrahead %}
+		{% endblock extrahead %}
+	</head>
+	<body class="{% block bodyclass %}{% endblock bodyclass %}">
+		<div style="display: none;">
+			<form id="id_langform" action="{% url set_language %}" method="post">
+				{% csrf_token %}
+				<input name="next" type="hidden" value="{{ request.session.no_lang_path }}">
+				<input type="hidden" name="language" id="id_language">
+			</form>
+		</div>
+		<div id="language">
+			<a id="lang_ro" href="javascript:" title="ro" class="inlineblock flag ro selected"></a>
+			<a id="lang_en" href="javascript:" title="en" class="inlineblock flag en"></a>
+		</div>
+		<header id="site_header">
+			<div class="container clearfix">
+				<a id="site_logo" href="{% url homepage %}" class="ir" title="DCAE" style="background: url('{{ STATIC_URL }}img/logo_{{ LANGUAGE_CODE }}.png') no-repeat;">DCAE</a>
+				{% items %}
+				<div id="site_search">
+					<div id="search">
+						<form id="searchform" class="clearfix" method="get" action="{% url search %}">
+							<input name="q" id="id_search" class="left" size="40" placeholder="search">
+							<input type="submit" id="search_submit" class="ir right" value="Search">
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="container clearfix">
+				<p id="userinfo" class="right">
+					{% if user.is_authenticated %}
+					{% if LANGUAGE_CODE == 'ro' %}Bine ați venit,{% else %}Welcome,{% endif %}
+						{% if user.get_full_name %}
+							 {{ user.get_full_name }}
+						{% else %}
+							 {% get_member_info as mb %}{{ mb.get_full_name }}
+						{% endif %}
+						<span>|</span> <a href="{% url profile %}" class="darkgreen">{% if LANGUAGE_CODE == 'ro' %}Editați informațiile despre dumneavoastră{% else %}Edit your info{% endif %}</a> <span>|</span> <a href="{% url logout %}" class="darkgreen">Logout</a>
+					{% else %}
+						<a href="{% url login %}" class="darkgreen">Login</a>
+					{% endif %}
+				</p>
+			</div>
+		</header>
+		{% block content %}
+		{% endblock content %}
+		<footer id="site_footer">
+			<div class="container clearfix">
+				<p id="footer_links" style="background: url('{{ STATIC_URL }}img/polielectro_{{ LANGUAGE_CODE }}.png') no-repeat;">
+					<a href="http://www.upb.ro/" id="pub_link" class="ir inlineblock" target="_blank">Universitatea Politehnica Bucuresti</a>
+					<a href="http://www.electronica.pub.ro/" id="electro_link" class="ir inlineblock" target="_blank">Facultatea de Electronica, Telecomunicatii si Tehnologia Informatiei</a>
+					<a href="{% url homepage %}" id="dcae_link" class="ir inlineblock" style="background: url('{{ STATIC_URL }}img/dcae_{{ LANGUAGE_CODE }}.png') no-repeat;">Dispozitive, Circuite si Arhitecturi Electonice</a>
+				</p>
+				<p id="credits">&copy; 2014. {% if LANGUAGE_CODE == 'ro' %}Toate drepturile rezervate. Departamentul DCAE - Facultatea de Electronică, Telecomunicații și Tehnologia Informației, Universitatea Politehnică București{% else %}All rights reserved, DCAE Department - Faculty of Electronics, Telecommunications and Information Technology - University "Politehnica" of Bucharest{% endif %}</p>
+			</div>
+		</footer>
+		{% block scripts %}
+		{% endblock scripts %}
+	</body>
+</html>

@@ -1,0 +1,22 @@
+{% if items %}
+<nav id="site_menu" class="inlineblock">
+	<ul id="menu">
+		{% for item in items %}
+			{% if not item.parent %}
+				<li class="menuli inlineblock" id="menu_{{ item.id }}">
+					{% if item.url %}<a class="menua" href="{{ item.url }}"{% if item.nofollow %} rel="nofollow"{% endif %}{% if item.blank %} target="_blank"{% endif %}>{{ item.name }}</a>{% else %}<span class="menua">{{ item.name }}</span>{% endif %}
+					{% if item.children.all %}
+						<ul class="submenu">
+							{% for i in item.children.all %}
+								<li class="submenuli">
+									<a class="submnenua" href="{{ i.url }}"{% if i.nofollow %} rel="nofollow"{% endif %}{% if i.blank %} target="_blank"{% endif %}>{{ i.name }}</a>
+								</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
+				</li>
+			{% endif %}
+		{% endfor %}
+	</ul>
+</nav>
+{% endif %}

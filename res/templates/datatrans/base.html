@@ -1,0 +1,31 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load url from future %}
+
+{% block title %}{% trans "Data Translation" %}{% endblock %}
+
+{% block extrastyle %}
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/dashboard.css" />
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/forms.css" />
+{% endblock %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+	<div class="breadcrumbs">
+		<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>  &rsaquo; <a href="{% url 'admin:index' %}trans/">{% trans 'Translation' %}</a>
+	</div>
+{% endif %}{% endblock %}
+
+{% if messages %}
+    <ul class="messagelist">{% for message in messages %}<li>{{ message|escape }}</li>{% endfor %}</ul>
+{% endif %}
+
+{% block pretitle %}{% endblock %}
+
+{% block content_title %}{% if title %}<h1>{{ title|escape }}</h1>{% endif %}{% endblock %}
+
+{% block content %}
+{% block object-tools %}{% endblock %}
+{{ content }}
+{% endblock %}
+{% block sidebar %}{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+		<title>{{ m.get_full_name }} | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro/accounts/profile/">
+		<meta name="robots" content="noindex, nofollow">
+{% endblock meta %}
+
+{% block bodyclass %}profile{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container">
+			<article id="about_page" class="generic_article">
+				<h1 class="ga_title">{% if LANGUAGE_CODE == 'ro' %}Profilul dumneavoastră{% else %}Your profile{% endif %}</h1>
+				<section class="ga_content clearfix">
+					<div>{{ form.non_field_errors }}</div>
+					{% if form.errors %}
+						<ul>
+							{% for error in form.errors %}
+								<li>{{ error }}</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
+					<form enctype="multipart/form-data" action="" method="post" id="profile_form">
+						{% csrf_token %}
+						<input type="hidden" name="name" id="id_name" value="{{ m.name }}" readonly>
+						<input type="hidden" name="first_name" id="id_first_name" value="{{ m.first_name }}" readonly>
+						<input type="hidden" name="slug" id="id_slug" value="{{ m.slug }}" readonly>
+						<select name="u" id="id_u" class="hidden" readonly>
+							<option value="{{ m.u.id }}" selected="selected">{{ m.get_full_name }}</option>
+						</select>
+						<input type="hidden" name="r" id="id_r" value="{{ m.r.id }}" readonly>
+						<select multiple="multiple" class="hidden" name="rm" id="id_rm" readonly>
+							{% if m.rm.all %} {% for r in m.rm.all %}<option value="{{ r.id }}" selected="selected">{{ r.name }}</option>{% endfor %}{% endif %}
+						</select>
+						<select multiple="multiple" class="hidden" name="coordinator" id="id_coordinator" readonly>
+							{% if m.coordinator.all %}{% for r in m.coordinator.all %}<option value="{{ r.id }}" selected="selected">{{ r.get_full_name }}</option>{% endfor %}{% endif %}
+						</select>
+						<select multiple="multiple" class="hidden" name="coord_bachelor" id="id_coord_bachelor" readonly>
+							{% if m.coord_bachelor.all %}{% for r in m.coord_bachelor.all %}<option value="{{ r.id }}" selected="selected">{{ r.get_full_name }}</option>{% endfor %}{% endif %}
+						</select>
+						<select multiple="multiple" class="hidden" name="coord_msc" id="id_coord_msc" readonly>
+							{% if m.coord_msc.all %}{% for r in m.coord_msc.all %}<option value="{{ r.id }}" selected="selected">{{ r.get_full_name }}</option>{% endfor %}{% endif %}
+						</select>
+						<select multiple="multiple" class="hidden" name="coord_msc" id="id_coord_phd" readonly>
+							{% if m.coord_phd.all %}{% for r in m.coord_phd.all %}<option value="{{ r.id }}" selected="selected">{{ r.get_full_name }}</option>{% endfor %}{% endif %}
+						</select>
+						<input type="checkbox" name="alumnus" id="id_alumnus" class="hidden"{% if m.alumnus %} checked="checked"{% endif %} readonly>
+						<input type="checkbox" name="faculty" id="id_faculty" class="hidden"{% if m.faculty %} checked="checked"{% endif %} readonly>
+						<input type="checkbox" name="public" id="id_public" class="hidden"{% if m.public %} checked="checked"{% endif %} readonly>
+
+						<p>
+							{% if m.image %}{% if LANGUAGE_CODE == 'ro' %}Imaginea actuala{% else %}Current image{% endif %}:<br><a href="{{ m.image.url }}" target="_blank"><img src="{{ m.thumbnail.url }}"></a><br><br>{% endif %}
+							<label for="id_image">{% if m.image %}{% if LANGUAGE_CODE == 'ro' %}Inlocuiți imaginea{% else %}Replace image{% endif %}{% else %}{% if LANGUAGE_CODE == 'ro' %}Imagine{% else %}Image{% endif %}{% endif %} ({% if LANGUAGE_CODE == 'ro' %}Dimensiunea recomandată este de 220x250px, altfel imaginea va fi redimensionată și probabil tăiată{% else %}Recommended size is 220x200px, otherwise the image will be resized and probably cropped{% endif %}):</label><br>
+							<input type="file" name="image" id="id_image"><br>
+							<span class="smaller">{% if LANGUAGE_CODE == 'ro' %}Tipuri de fișiere permise{% else %}Allowed file types{% endif %}: .png, .jpg, .jpeg, .gif</span>
+						</p>
+						<p>
+							{% if not m.image and m.img_url %}{% if LANGUAGE_CODE == 'ro' %}Imaginea curentă, descarcată de la{% else %}Current image, downloaded from{% endif %} {{ m.img_url }}<br><img src="{{ m.remote_image_url }}"><br><br>{% endif %}
+							<label for="id_img_url">{% if LANGUAGE_CODE == 'ro' %}URL Imagine{% else %}Image URL{% endif %}:</label><br>
+							<input id="id_img_url" type="text" name="img_url" maxlength="255" value="{{ m.img_url }}"><br>
+							<span class="smaller">{% if LANGUAGE_CODE == 'ro' %}Dacă nu încărcați o imagine, puteți specifica adresa web a imaginii pe care doriți să o folosiți pentru profilul dumneavoastră.{% else %}If you don't upload an image, you can specify the URL of the image you want to use with your profile.{% endif %} E.g. http://www.example.com/image.jpg</span>
+						</p>
+						<p>
+							<label for="id_phone">{% if LANGUAGE_CODE == 'ro' %}Telefon{% else %}Phone{% endif %}:</label><br>
+							<input id="id_phone" type="text" name="phone" maxlength="20" value="{{ m.phone }}" />
+						</p>
+						<p>
+							<label for="id_email">Email:</label><br>
+							<input id="id_email" type="text" name="email" maxlength="254" value="{{ m.email }}" />
+						</p>
+						<p>
+							<label for="id_degrees">{% if LANGUAGE_CODE == 'ro' %}Grade academice{% else %}Academic degrees{% endif %}:</label><br>
+							<textarea id="id_degrees" rows="10" cols="40" name="degrees">{{ m.degrees }}</textarea>{% if m.degrees %}<br><a class="salmon" href="{% url translate_degrees %}">{% if LANGUAGE_CODE == 'ro' %}Traduceți{% else %}Translate{% endif %}</a>{% endif %}
+						</p>
+						<p>
+							<label for="id_experience">{% if LANGUAGE_CODE == 'ro' %}Experiență profesională{% else %}Professional experience{% endif %}:</label><br>
+							<textarea id="id_experience" rows="10" cols="40" name="experience">{{ m.experience }}</textarea>{% if m.experience %}<br><a class="salmon" href="{% url translate_experience %}">{% if LANGUAGE_CODE == 'ro' %}Traduceți{% else %}Translate{% endif %}</a>{% endif %}
+						</p>
+						<p>
+							<label for="id_activity">{% if LANGUAGE_CODE == 'ro' %}Activitate academică{% else %}Academic activity{% endif %}:</label><br>
+							<textarea id="id_activity" rows="10" cols="40" name="activity">{{ m.activity }}</textarea>{% if m.activity %}<br><a class="salmon" href="{% url translate_activity %}">{% if LANGUAGE_CODE == 'ro' %}Traduceți{% else %}Translate{% endif %}</a>{% endif %}
+						</p>
+						<p>
+							<label for="id_notes">Extra:</label><br>
+							<textarea id="id_notes" rows="10" cols="40" name="notes">{{ m.notes }}</textarea>{% if m.notes %}<br><a class="salmon" href="{% url translate_notes %}">{% if LANGUAGE_CODE == 'ro' %}Traduceți{% else %}Translate{% endif %}</a>{% endif %}
+						</p>
+
+						<p><input type="submit" id="hti_link" value="{% if LANGUAGE_CODE == 'ro' %}Salvați{% else %}Save{% endif %}"></p>
+					</form>
+				</section>
+			</article>
+		</div>
+{% endblock content %}
+
+{% block scripts %}
+		<script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/tinymce.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/tinymce_init.js"></script>
+{% endblock scripts %}

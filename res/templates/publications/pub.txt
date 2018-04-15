@@ -1,0 +1,17 @@
+Hello, a new publication has been added/updated:
+
+Genre: {{ pub.gen }}
+Authors (among members): {% for a in pub.authors.all %}{{ a.name|upper }}, {{ a.first_name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+{% if pub.oauthors %}Non-member authors: {{ pub.oauthors|striptags }}{% endif %}
+Title: {{ pub.title }}
+{% if pub.publisher %}Publishing house: {{ pub.publisher }}{% endif %}
+{% if pub.city %}City: {{ pub.city }}{% endif %}
+{% if pub.review %}Review: {{ pub.review|striptags }}{% endif %}
+{% if pub.conference %}Conference: {{ pub.conference|striptags }}{% endif %}
+{% if pub.other %}Other info: {{ pub.other|striptags }}{% endif %}
+{% if pub.pp %}Pages: {{ pub.pp }}{% endif %}
+Year: {{ pub.year }}
+{% if pub.book %}The publication is a book{% endif %}
+{% if pub.abstract %}Abstract: {{ pub.abstract|striptags }}{% endif %}
+{% if pub.url %}Link to the document: {{ pub.url }}{% endif %}
+{% if pub.public %}The publication is publicly available on the website. You can deactivate it by visiting de admin section (dcae.pub.ro/admin/publications/publication/) and unchecking the "Public" checbox.{% else %}The publication is not visible on the website. You can activate it by visiting the admin section (http://www.dcae.pub.ro/admin/publications/publication/) and checking the "Public" checbox.{% endif %}

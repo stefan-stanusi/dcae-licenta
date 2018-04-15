@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+		<title>{% if LANGUAGE_CODE == 'ro' %}Mulțumim{% else %}Thank you{% endif %} | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro/accounts/profile/ty/">
+		<meta name="robots" content="noindex, nofollow">
+{% endblock meta %}
+
+{% block bodyclass %}pty{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container">
+			<article id="about_page" class="generic_article">
+				<h1 class="ga_title">{% if LANGUAGE_CODE == 'ro' %}Mulțumim{% else %}Thank you{% endif %}</h1>
+				<section class="ga_content clearfix">
+					{% if LANGUAGE_CODE == 'ro' %}
+						<p>Profilul dumneavoastră a fost salvat.</p>
+						<p><b><a class="darkgreen" href="{% url profile %}">Înapoi la profil</a></b></p>
+					{% else %}
+						<p>Your profile has been saved.</p>
+						<p><b><a class="darkgreen" href="{% url profile %}">Back to your profile</a></b></p>
+					{% endif %}
+				</section>
+			</article>
+		</div>
+{% endblock content %}

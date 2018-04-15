@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load members_tags %}
+
+{% block meta %}
+		<title>DCAE</title>
+		<meta name="description" content="Dispozitive, circuite si arhitecturi electronice - Facultatea de Electronica, Telecomunicatii si Tehnologia Informatiei - Universitatea Politehnica Bucuresti">
+		<link rel="canonical" href="/">
+		<meta name="robots" content="index, follow">
+{% endblock meta %}
+
+{% block bodyclass %}homepage{% endblock bodyclass %}
+
+{% block content %}
+		<div id="home_top" style="background-color: {% if i.bg %}{{ i.bg }}{% else %}#00868b{% endif %}; background-repeat: no-repeat; background-position: top center;
+			background-image: {% if LANGUAGE_CODE == 'en' %}{% if i.image %}url('{{ i.image.url }}'){% else %}url('{{ STATIC_URL }}img/home_lead.jpg'){% endif %}{% elif LANGUAGE_CODE == 'ro' %}{% if i.image_ro %}url('{{ i.image_ro.url }}'){% elif i.image.url %}url('{{ i.image.url }}'){% else %}url('{{ STATIC_URL }}img/home_lead.jpg'){% endif %}{% endif %};">
+			<div class="container">
+				<div id="ht_intro">
+				{% if i.logo and LANGUAGE_CODE == 'en' %}
+					<img id="hti_logo" src="{{ i.logo.url }}" alt="" width="{{ i.logo.width }}" height="{{ i.logo.height }}">
+				{% elif i.logo_ro and LANGUAGE_CODE == 'ro' %}
+					<img id="hti_logo" src="{{ i.logo_ro.url }}" alt="">
+				{% else %}
+					<img id="hti_logo" src="{{ STATIC_URL }}img/home_logos.png" alt="" width="348" height="56">
+				{% endif %}
+					<h1 id="hti_title">{% if i.title %}{{ i.title }}{% else %}Dispozitive, Circuite si Arhitecturi Electronice{% endif %}</h1>
+					<div id="hti_text">
+					{% if i.text %}
+						{{ i.text|safe }}
+					{% else %}
+						<p>Specificul departamentului poate fi pe scurt enuntat ca fiind cel de bazele electronicii.</p>
+						<p>Specializarea de care se ocupa departamentul se desfasoara in cadrul Microelectronicii, Optoelectronicii si Nanotehnologiilor.</p>
+					{% endif %}
+					</div>
+					<p>
+						<a id="hti_link" href="{% if i.anchor_url %}{{ i.anchor_url }}{% else %}{% url about %}{% endif %}">{% if i.anchor_text %}{{ i.anchor_text }}{% else %}{% if LANGUAGE_CODE == 'ro' %}Citeste mai multe despre noi{% else %}Read more about us{% endif %}{% endif %} <span id="htil_span">&gt;</span></a>
+					</p>
+				</div>
+			</div>
+		</div>
+		<div id="home_center">
+			<div class="container clearfix">
+				<h4 id="hc_heading">{% if i.rapid_access %}{{ i.rapid_access }}{% else %}Acces rapid{% endif %}</h4>
+				<div id="hc_studies" class="hc_div left grid_4 alpha">
+					<h3 id="hcs_title" class="hcd_title">{% if i.study_programs %}{{ i.study_programs }}{% else %}Programe de studiu{% endif %}</h3>
+					{% if masters %}
+					<ul class="hcr_ul">
+						{% for m in masters %}
+						<li class="hcru_li">
+							<a href="{{ m.get_absolute_url }}" class="darckgreen">{{ m.name }}</a>
+						</li>
+						{% endfor %}
+					</ul>
+					{% endif %}
+				</div>
+				<div id="hc_faculty" class="hc_div left grid_4">
+					<h3 id="hcf_title" class="hcd_title">{% if i.faculty %}{{ i.faculty }}{% else %}Cadre didactice{% endif %}</h3>
+					{% if members %}
+					<ul class="hcd_ul">
+						{% for m in members %}
+						<li class="hcdu_li">
+							<a href="{{ m.get_absolute_url }}" class="hcdu_lia">
+								<span class="hcdm_r">{% if m.r.singular_name %}{{ m.r.singular_name }}{% else %}{{ m.r|slice:":-1" }}{% endif %}</span><br>
+								<span class="hcdm">{{ m.get_full_name }}</span>
+							</a>
+							<p class="hcdulip">
+								{% if m.email %}{% encrypt_email m.email %}{% endif %}
+								{% if m.phone %} | {% encrypt_string m.phone %}{% endif %}
+							</p>
+						</li>
+						{% endfor %}
+					</ul>
+					{% endif %}
+				</div>
+				<div id="hc_resources" class="hc_div left grid_4">
+					<h3 id="hcr_title" class="hcd_title">{% if i.resources %}{{ i.resources }}{% else %}Resurse / Suport cursuri{% endif %}</h3>
+					{% if courses or labs %}
+						<ul id="hcr_ul">
+							{% for c in courses %}
+								<li class="hcru_li">
+									<a href="{{ c.get_absolute_url }}">{{ c.name }}</a> {% if LANGUAGE_CODE == 'ro' and c.ro_url %}(<a href="{{ c.ro_url }}" class="salmon">Suport curs</a>){% elif LANGUAGE_CODE == 'en' and c.url %}(<a href="{{ c.url }}" class="salmon">Course materials</a>){% endif %}
+								</li>
+							{% endfor %}
+							{% for c in labs %}
+								<li class="hcru_li">
+									<a href="{{ c.get_absolute_url }}">{{ c.name }}</a> {% if LANGUAGE_CODE == 'ro' and c.ro_url %}(<a href="{{ c.ro_url }}" class="salmon">Materiale laborator</a>){% elif LANGUAGE_CODE == 'en' and c.url %}(<a href="{{ c.url }}" class="salmon">Laboratory materials</a>){% endif %}
+								</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
+				</div>
+				<div id="hc_news" class="hc_div left grid_4 omega">
+					<h3 id="hcn_title" class="hcd_title">{% if i.news %}{{ i.news }}{% else %}Stiri / Noutati{% endif %}</h3>
+					{% if announcements %}
+					<ul id="hcn_ul">
+					{% for a in announcements %}
+						<li>
+							<span class="hcn_d">{{ a.date|date:'d.m.Y' }} -</span><br>
+							<a href="{{ a.get_absolute_url }}">{{ a.title }}</a>
+						</li>
+					{% endfor %}
+						<li><span class="hcdm"><b><a href="{% url announcements %}">{% if LANGUAGE_CODE == 'ro' %}Vezi toate știrile{% else %}View all news{% endif %}</a></b></span></li>
+					</ul>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<div id="home_bottom" class="container clearfix">
+			<div id="hb_tweets" class="left grid_5 alpha">
+				<h4 class="hw_title">DCAE Tweets</h4>
+				<div>
+					{{ i.twitter|safe }}
+				</div>
+			</div>
+			<div id="hb_events" class="left grid_6">
+				<h4 class="hw_title">{% if LANGUAGE_CODE == 'ro' %}Evenimente DCAE{% else %}DCAE Events{% endif %}</h4>
+				<div>
+					{{ i.gc|safe }}
+				</div>
+			</div>
+			<div id="hb_contact" class="left grid_5 omega">
+				<h4 class="hw_title">Contact</h4>
+				<div id="hbc_wrapper">
+					<div id="hbc_info">
+						<p>{% if LANGUAGE_CODE == 'ro' %}Departamentul DCAE - <br>Facultatatea de Electronică,<br> Telecomunicații și Tehnologia<br> Informației{% else %}DCAE Department - Faculty of Electronics, Telecommunications and Information Technology{% endif %}</p>
+						{% if i.address %}{{ i.address|safe }}{% else %}<p>{% if LANGUAGE_CODE == 'ro' %}Complex LEU<br>Bd. Iuliu Maniu, nr. 1-3<br>Sect. 6, 061071, Bucuresti, Romania{% else %}{% endif %}LEU Complex<br>Bd. Iuliu Maniu, nr. 1-3<br>Sect. 6, 061071, Bucharest, Romania</p>{% endif %}
+						<p>{% if i.phone %}{{ i.phone }}{% endif %}</p>
+						<p>{% if i.email %}<a href="mailto:{{ i.email }}" class="darkgreen">{{ i.email }}</a>{% endif %}</p>
+					</div>
+					<div id="hbc_contact">
+						<img src="{{ STATIC_URL }}img/map.png" width="248" height="196" alt="{% if LANGUAGE_CODE == 'ro' %}Harta DCAE{% else %}DCAE Map{% endif %}">
+					</div>
+				</div>
+			</div>
+		</div>
+{% endblock content %}

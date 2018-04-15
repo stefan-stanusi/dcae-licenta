@@ -1,0 +1,14 @@
+	<h3 class="m_heading">{% if LANGUAGE_CODE == 'ro' %}Parteneri{% else %}Partners{% endif %}</h3>
+	<ul id="partners_ul">
+		{% for p in partners %}
+			<li class="partner_li">
+				{% if p.url %}
+					<a href="{{ p.url }}" target="_blank">
+						<img src="{{ p.logo.url }}" width="{{ p.logo.width }}" height="{{ p.logo.height }}" {% if p.description %}alt="{{ p.description}}"{% else %}alt="{{ p.name }}"{% endif %} title="{{ p.name }}">
+					</a>
+				{% else %}
+					<img src="{{ p.logo.url }}" width="{{ p.logo.width }}" height="{{ p.logo.height }}" {% if p.description %}alt="{{ p.description}}"{% else %}alt="{{ p.name }}"{% endif %} title="{{ p.name }}">
+				{% endif %}
+			</li>
+		{% endfor %}
+	</ul>

@@ -1,0 +1,8 @@
+*.pyc
+*.pyo
+Thumbs.db
+res/media*
+*~
+~*
+app/settings.py
+logs/app.log

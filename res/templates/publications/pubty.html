@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+		<title>{% if LANGUAGE_CODE == 'ro' %}Mulțumim{% else %}Thank you{% endif %} | DCAE</title>
+		<meta name="robots" content="noindex, nofollow">
+{% endblock meta %}
+
+{% block bodyclass %}about{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container">
+			<article id="about_page" class="generic_article">
+				<h1 class="ga_title">{% if LANGUAGE_CODE == 'ro' %}Mulțumim{% else %}Thank you{% endif %}</h1>
+				<section class="ga_content clearfix">
+					<p>{% if LANGUAGE_CODE == 'ro' %}Publicația dumneavoastră a fost adaugată și va deveni vizibilă pe site în scurt timp.{% else %}Your publication has been successfully added; it will soon become available on the website.{% endif %}</p>
+				</section>
+			</article>
+		</div>
+{% endblock content %}

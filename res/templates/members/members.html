@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load members_tags %}
+
+{% block meta %}
+		<title>{% if LANGUAGE_CODE == 'ro' %}Membrii departamentului DCAE{% else %}The members of the DCAE department{% endif %} | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro/membri/">
+		<meta name="robots" content="index, follow">
+{% endblock meta %}
+
+{% block bodyclass %}members{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container clearfix">
+			<h1 class="ga_title">{% if LANGUAGE_CODE == 'ro' %}Membrii departamentului DCAE{% else %}The members of the DCAE department{% endif %}</h1>
+			<div id="sidebar" class="left grid_4 alpha">
+				{% if mbs %}
+					<h3 id="sidebar_title" class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Toți membrii{% else %}All members{% endif %}</h3>
+					{% regroup mbs by name|slice:":1" as letter_list %}
+					<ul id="archives">
+						{% for letter in letter_list %}
+							<li class="archivesli">
+								<h4><b>{{ letter.grouper }}</b></h4>
+								 <ul>
+									{% for m in letter.list %}
+									<li>
+										<a href="{{ m.get_absolute_url }}">{{ m.get_full_name }}{% if m.r.shortname %}, {{ m.r.shortname }}{% endif %}</a>
+									</li>
+									{% endfor %}
+								</ul><br>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</div>
+			<div id="main" class="right grid_12 omega">
+				{% if roles %}
+					{% for r in roles %}
+						{% if r.members.all %}
+							<div class="members_role clearfix">
+								<h3 class="heading_bg salmon allcaps">{{ r.name }}</h3>
+								<div class="clearfix"></div>
+								{% for m in r.members.all %}
+									{% if m.public %}
+										<div class="mr_member left grid_4">
+											<p class="mrm_img">
+												<a href="{{ m.get_absolute_url }}">
+													{% if m.image %}
+														<img src="{% if m.thumbnail %}{{ m.thumbnail.url }}{% else %}{{ m.image.url }}{% endif %}" alt="{{ m.get_full_name }}" width="220" height="250">
+													{% elif m.img_url %}
+														<img src="{{ m.remote_image_url }}" alt="{{ m.get_full_name }}" width="220" height="250">
+													{% else %}
+														<img src="{{ STATIC_URL }}img/member_default.png" alt="{{ m.get_full_name }}" width="220" height="198">
+													{% endif %}
+												</a>
+											</p>
+											<div class="mr_info">
+												<p class="mr_name"><a href="{{ m.get_absolute_url }}" class="darkgreen"><b>{{ m.get_full_name }}</b></a></p>
+												{% if m.faculty %}
+													<p class="gray allcaps smaller mr_subtitle">{% if LANGUAGE_CODE == 'ro' %}Discipline{% else %}Courses{% endif %}:</p>
+													<p>{% if m.ccourses.all %}{% for c in m.ccourses.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.name }}</a>{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}{% else %}-{% endif %}</p>
+												{% elif m.attributions %}
+													<p class="gray allcaps smaller mr_subtitle">{% if LANGUAGE_CODE == 'ro' %}Atribuții{% else %}Attributions{% endif %}:</p>
+													{{ m.attributions|safe }}
+												{% endif %}
+												<p class="gray allcaps smaller mr_subtitle">{% if LANGUAGE_CODE == 'ro' %}Sala{% else %}Room{% endif %}:</p>
+												<p>{% if m.rm.all %}{% for r in m.rm.all %}{% if r.public %}<a href="{{ r.get_absolute_url }}" class="darkgreen">{{ r.name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}-{% endif %}</p>
+												<p>{% if m.email %}{% encrypt_email m.email %}{% endif %} {% if m.phone %}| {% encrypt_string m.phone %}{% endif %}&nbsp;</p>
+											</div>
+										</div>
+									{% endif %}
+								{% endfor %}
+							</div>
+						{% endif %}
+					{% endfor %}
+				{% endif %}
+			</div>
+		</div>
+{% endblock content %}

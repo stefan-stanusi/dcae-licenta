@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+		<title>{{ m.name }} | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro{{ p.get_absolute_url }}">
+		<meta name="robots" content="index, follow">
+{% endblock meta %}
+
+{% block bodyclass %}course{% endblock bodyclass %}
+
+
+{% block content %}
+		<div class="page container clearfix">
+			<h2 class="ga_title">{% if LANGUAGE_CODE == 'ro' %}Programe master{% else %}Master programmes{% endif %}</h2>
+			<div id="sidebar" class="left grid_4 alpha">
+				<h3 id="sidebar_title" class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Toate programele{% else %}All programmes{% endif %}</h3>
+				{% if masters %}
+					<ul id="archives">
+						{% for cs in masters %}
+							<li class="archivesli">
+								<a href="{{ cs.get_absolute_url }}">{{ cs.name }}</a>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</div>
+			<div id="main" class="right grid_12 omega">
+				<h3 class="heading_bg salmon clearfix">
+					<a id="back_link" class="darkgreen right" href="{% url masters %}">&lt; {% if LANGUAGE_CODE == 'ro' %}Înapoi{% else %}Back{% endif %}</a>
+				</h3>
+				<article class="article_single clearfix">
+					<h1 class="al_title">{{ m.name }}</h1>
+					<div class="article_text">
+
+						{% if m.studies %}
+							<p class="pseudolabel"><b>{% if LANGUAGE_CODE == 'ro' %}Direcții de studiu{% else %}Study directions{% endif %}</b></p>
+							{{ m.studies|safe }}
+						{% endif %}
+
+						{% if m.description %}
+							<p class="pseudolabel"><b>{% if LANGUAGE_CODE == 'ro' %}Descriere{% else %}Description{% endif %}:</b></p>
+							{{ m.description|safe }}
+						{% endif %}
+
+						{% if m.mcourses.all %}
+							<h3 class="m_heading">{% if LANGUAGE_CODE == 'ro' %}Cursuri{% else %}Courses{% endif %}</h3>
+							<ul>
+								{% for c in m.mcourses.all %}
+								{% if c.public %}
+								<li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
+								{% endif %}
+								{% endfor %}
+							</ul>
+						{% endif %}
+
+						{% if m.mlabs.all %}
+							<h3 class="m_heading">{% if LANGUAGE_CODE == 'ro' %}Laboratoare{% else %}Laboratories{% endif %}</h3>
+							<ul>
+								{% for c in m.mlabs.all %}
+								{% if c.public %}
+								<li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
+								{% endif %}
+								{% endfor %}
+							</ul>
+						{% endif %}
+
+						{% if m.partners.all %}
+							<h3 class="m_heading">{% if LANGUAGE_CODE == 'ro' %}Parteneri{% else %}Partners{% endif %}</h3>
+							<ul id="partners_ul">
+								{% for p in m.partners.all %}
+								{% if p.public %}
+									<li class="partner_li">
+										{% if p.url %}
+											<a href="{{ p.url }}" target="_blank">
+												<img src="{{ p.logo.url }}" width="{{ p.logo.width }}" height="{{ p.logo.height }}" {% if p.description %}alt="{{ p.description}}"{% else %}alt="{{ p.name }}"{% endif %} title="{{ p.name }}">
+											</a>
+										{% else %}
+											<img src="{{ p.logo.url }}" width="{{ p.logo.width }}" height="{{ p.logo.height }}" {% if p.description %}alt="{{ p.description}}"{% else %}alt="{{ p.name }}"{% endif %} title="{{ p.name }}">
+										{% endif %}
+									</li>
+								{% endif %}
+								{% endfor %}
+							</ul>
+						{% endif %}
+					</div>
+				</article>
+			</div>
+		</div>
+{% endblock content %}

@@ -1,0 +1,243 @@
+0. POSTGRES CONFIGURATION
+=========================
+
+0.1 install postgresql-contrib
+
+# apt-get update
+# apt-get upgrade --show-upgraded
+# apt-get install postgresql-contrib
+
+
+
+0.2 Set a password for postgres system user
+
+# passwd postgres
+... Enter new UNIX password:
+
+
+
+0.3 Set a password for the postgres administrative user
+
+# su - postgres
+$ psql -d template1
+
+# ALTER USER postgres WITH PASSWORD 'changeme';
+# \q
+
+
+
+0.4 Change postgres default template1 to UTF8 encoding
+
+[# su - postgres]
+$ psql -U postgres
+
+# UPDATE pg_database SET datistemplate=FALSE WHERE datname='template1';
+UPDATE 1
+
+# DROP DATABASE template1;
+DROP DATABASE
+
+# CREATE DATABASE template1 WITH owner=postgres template=template0 encoding='UTF8';
+CREATE DATABASE
+
+# UPDATE pg_database SET datistemplate=TRUE WHERE datname='template1';
+UPDATE 1
+
+# \q
+
+
+
+0.5 Configuration files
+
+/etc/postgresql/<version>/main/
+[Defaults are OK for testing or for really small websites. The setup and tweaking really depend on your machine's specs, or the website's traffic]
+
+You'll probably want to:
+	edit postgresql.conf [see http://www.varlena.com/GeneralBits/Tidbits/annotated_conf_e.html, especially "Resource Usage" part of the table]
+	edit pg_hba.conf [deals with authentification, very clear inline comments]
+
+local all all should be md5, otherwise postgres will expect a UNIX user corresponding to the database's role
+# "local" is for Unix domain socket connections only
+local   all             all                                     md5
+
+NB pg_hba.conf must be accessible to the postgres UNIX user; if you've edited the file as root, you should
+
+# chown postgres:postgres /etc/postgresql/<version>/main/pg_hba.conf
+
+after you've edited the files, restart the postgres server
+
+# service postgresql restart
+
+
+
+0.6 Creating a database
+
+# su - postgres
+$ psql -d template1
+
+postgres should never be the database user
+First, create a postgres role; each database should be managed by its own role (if one of the databases is compromised the others will still be safe)
+
+# CREATE ROLE foo WITH LOGIN PASSWORD 'bar';
+CREATE ROLE
+# CREATE DATABASE qux WITH OWNER foo;
+CREATE DATABASE
+
+
+0.7 Some additional info
+
+https://www.linode.com/docs/databases/postgresql/ubuntu-12-04-precise-pangolin
+
+
+
+0.8 The official documentation
+http://www.postgresql.org/docs/
+
+
+1. APACHE CONFIGURATION
+=======================
+
+Unlike PHP,Python files cannot be randomly executed based on their location, so Apache will need a special configuration.
+
+1.1 Configure a global WSGI daemon process
+
+# touch /etc/apache2/sites-available/0-globals
+[this is a virtual website, containing just a definition; the name is important, and should be the first website loaded by apache, hence "0" in the beginning]
+
+edit /etc/apache2/sites-available/0-globals
+
+# Global WSGI process; it will run all the Python/Django websites on the host
+# display-name - visible when you run top/htop or ps
+# It will have 2 processes, with 16 threads each
+# It runs with the same user/group as Apache (www-data), to ensure the access
+# to files.
+# umask the implicit permissions for files created by the www-data user,
+# equivalent to the 644 mode
+# stack-size limits the virtual memory stack allocated to each request
+# deadlock-timeout -  after a potential deadlock, the process should wait 60
+# seconds; then it should restart [NB if there are scripts hanging, waiting
+# for some external resources or simply being too massive to be executed in
+# one minute, you should change this value; the default is 300, btw]
+# maximum-requests - the process is killed after this amount of requests, and
+# restarted (prevents possible memory leaks)
+
+
+WSGIDaemonProcess dcae display-name=dcae  user=www-data group=www-data \
+		processes=2 threads=15  umask=0022 stack-size=624288\
+		maximum-requests=10000
+
+
+Save the file
+
+
+If you need to define a FCGI process for running PHP websited, you can also place the process definition in this file, e.g.:
+
+FcgidFixPathinfo 1
+FcgidIdleTimeout 200
+FcgidBusyTimeout 120
+FcgidBusyScanInterval 30
+FcgidMaxProcesses 40
+FcgidMaxRequestsPerProcess 10000
+
+
+Enable the virtual website
+
+# a2ensite 0-globals
+
+
+1.2 Virtual host configuration for the Django website
+
+BIG NB
+Django captures all the URLs on its path; if a Django website is set to serve "/", it will throw 404 errors for everything that is not routed through its urls module.
+
+To prevent this, you'll need to enable mod_alias in Apache
+# a2enmod alias
+
+Then you'll need to prevent the WSGI process which executes python scripts from serving static files and PHP files, with Alias or AliasMatch directives
+http://httpd.apache.org/docs/2.2/mod/mod_alias.html#alias
+
+The configuration file:
+
+# touch /etc/apache2/sites-available/dcae.pub.ro
+
+edit the file [change ServerAdmin you@example.org]
+
+<VirtualHost *:80>
+	ServerName dcae.pub.ro
+	RedirectMatch permanent (.+)$ http://www.dcae.pub.ro$1
+	# redirects non-www to www
+</VirtualHost>
+
+<VirtualHost *:80>
+	ServerName www.dcae.pub.ro
+	ServerAdmin you@example.org
+
+	# Python scripts should not be in the DocumentRoot [security measure]
+	DocumentRoot /var/www/dcae/empty
+
+	<Directory />
+		Options FollowSymLinks -Indexes
+		# no .htaccess, please
+		AllowOverride None
+	</Directory>
+
+	<Directory /var/www/dcae/empty>
+		Options -Indexes FollowSymLinks MultiViews
+		AllowOverride None
+		Order allow,deny
+		allow from all
+	</Directory>
+
+
+	# static files
+	Alias /favicon.ico  /var/www/dcae/empty/favicon.ico
+	Alias /static/admin "/var/www/dcae/res/static/admin"
+	Alias /static  "/var/www/dcae/res/static"
+	Alias /media  "/var/www/dcae/res/media"
+
+	# Aliases to PHP directories [don't know your setup, so cannout come up with enything useful]
+
+
+	# Requests for other files should be sent by Apache to the WSGI back-end
+	WSGIScriptAlias / "/var/www/dcae/app/app.wsgi"
+
+	<Directory "/var/www/dcae/app>
+		# the directory where the Python code lives
+		# WSGIProcessGroup - the process defined in 0-default (handler)
+		# WSGIApplicationGroup (sets the context for this particular website)
+		Options -Indexes FollowSymlinks
+		AllowOverride None
+		WSGIProcessGroup dcae
+		WSGIApplicationGroup dcae-website
+		Order deny,allow
+		Allow from all
+	</Directory>
+
+	# finally, the logs
+	ErrorLog /var/log/apache2/dcae_error.log
+	LogLevel crit
+	CustomLog /var/log/apache2/dcae_access.log combined
+</VirtualHost>
+
+
+Save the file end enable the website
+# a2ensite dcae.pub.ro
+
+
+
+3. Configure DCAE Deployment
+============================
+
+3.1 Create and change mod for log file (logs/app.log) to 666 or make it writeable for www-data.
+
+3.2 Copy settings.py from docs to apps and change:
+
+    - ADMINS: name and e-mail for sites admin (for error notification).
+    - DATABASES: user name, database name and database password.
+
+3.3 Create databases (./manage.py help - will display a list of commands)
+
+    - ./manage.py syncdb
+    * for the tables on the bottom, use:
+    - ./manage.py migrate <db_name>
+

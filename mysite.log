@@ -1,0 +1,56 @@
+[05/Apr/2018 19:39:19] WARNING [django.request:144] Not Found: /
+[05/Apr/2018 19:39:19] ERROR [django.request:210] Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 151, in get_response
+    response = callback(request, **param_dict)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/utils/decorators.py", line 91, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/views/defaults.py", line 26, in page_not_found
+    return http.HttpResponseNotFound(template.render(RequestContext(request, {'request_path': request.path})))
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/base.py", line 140, in render
+    return self._render(context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/base.py", line 134, in _render
+    return self.nodelist.render(context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/base.py", line 830, in render
+    bit = self.render_node(node, context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/base.py", line 844, in render_node
+    return node.render(context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/loader_tags.py", line 124, in render
+    return compiled_parent._render(context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/base.py", line 134, in _render
+    return self.nodelist.render(context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/base.py", line 830, in render
+    bit = self.render_node(node, context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/base.py", line 844, in render_node
+    return node.render(context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/defaulttags.py", line 404, in render
+    raise NoReverseMatch("'url' requires a non-empty first argument. "
+NoReverseMatch: 'url' requires a non-empty first argument. The syntax changed in Django 1.5, see the docs.
+[05/Apr/2018 19:39:19] WARNING [django.request:144] Not Found: /favicon.ico
+[05/Apr/2018 19:39:19] ERROR [django.request:210] Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 151, in get_response
+    response = callback(request, **param_dict)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/utils/decorators.py", line 91, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/views/defaults.py", line 26, in page_not_found
+    return http.HttpResponseNotFound(template.render(RequestContext(request, {'request_path': request.path})))
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/base.py", line 140, in render
+    return self._render(context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/base.py", line 134, in _render
+    return self.nodelist.render(context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/base.py", line 830, in render
+    bit = self.render_node(node, context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/base.py", line 844, in render_node
+    return node.render(context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/loader_tags.py", line 124, in render
+    return compiled_parent._render(context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/base.py", line 134, in _render
+    return self.nodelist.render(context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/base.py", line 830, in render
+    bit = self.render_node(node, context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/base.py", line 844, in render_node
+    return node.render(context)
+  File "/home/cosmin/Programare/PROJECTS/Licenta/dcae-website-master-5cb3767e5e71f234f8dd07b80a6f2b72b6a1c12c/venv/local/lib/python2.7/site-packages/django/template/defaulttags.py", line 404, in render
+    raise NoReverseMatch("'url' requires a non-empty first argument. "
+NoReverseMatch: 'url' requires a non-empty first argument. The syntax changed in Django 1.5, see the docs.

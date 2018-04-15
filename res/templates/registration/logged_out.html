@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block meta %}
+		<title>Logout | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro/membri/logout/">
+		<meta name="robots" content="noindex, nofollow">
+{% endblock meta %}
+
+{% block bodyclass %}logout{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container">
+			<article id="about_page" class="generic_article">
+				<h1 class="ga_title">Logout</h1>
+				<section class="ga_content clearfix">
+					<p>{% if LANGUAGE_CODE == 'ro' %}V-ați deautentificat.{% else %}You have succesfully logged out.{% endif %}</p>
+					<p><a href="{% url login %}">Login</a></p>
+				</section>
+			</article>
+		</div>
+
+{% endblock content %}

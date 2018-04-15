@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load announcements_tags %}
+
+{% block meta %}
+		<title>{{ a.title }} | DCAE</title>
+		<meta name="description" content="{% if a.metadescription %}{{ a.metadescription }}{% else %}{{ a.metadesc }}{% endif %}">
+		<link rel="canonical" href="http://www.dcae.pub.ro{{ a.get_absolute_url }}">
+		<meta name="robots" content="{% if a.noindex %}noindex{% else %}index{% endif %}, follow">
+{% endblock meta %}
+
+{% block bodyclass %}announcement{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container clearfix">
+			<h2 class="ga_title">{% if LANGUAGE_CODE == 'ro' %}Anunțuri și evenimente{% else %}Announcements and Events{% endif %}</h2>
+			<div id="sidebar" class="left grid_4 alpha">
+				<h3 id="sidebar_title" class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Sortare articole{% else %}Article sorting{% endif %}</h3>
+				<p><b><a href="{% url announcements %}">{% if LANGUAGE_CODE == 'ro' %}Toate{% else %}All{% endif %}</a></b></p>
+				{% get_announcement_archives as archives %}
+				{% for year in archives %}
+				{% if forloop.first %}<ul id="archives">{% endif %}
+					<li class="archivesli">
+						<p class="archivesy">{{ year.0 }}</p>
+						<ul class="archives_months">
+							{% for month in year.1 %}
+							<li class="archives_month"><a href="/anunturi/{{ year.0 }}/{{ month|date:'m' }}/">{{ month|date:"F" }}</a></li>
+							{% endfor %}
+						</ul>
+					</li>
+				{% if forloop.last %}</ul>{% endif %}
+				{% endfor %}
+			</div>
+			<div id="main" class="right grid_12 omega">
+				<h3 class="heading_bg salmon clearfix">
+					{% if LANGUAGE_CODE == 'ro' %}Anunțurile și evenimente{% else %}Announcements and events{% endif %} &ndash; {{ a.date|date:"F Y" }}
+					<a id="back_link" class="darkgreen right" href="{% url announcements %}">&lt; {% if LANGUAGE_CODE == 'ro' %}Înapoi{% else %}Back{% endif %}</a>
+				</h3>
+				<article class="article_single clearfix">
+					<h1 class="al_title">{{ a.title }}</h1>
+					{% if a.subtitle %}<h3 class="al_subtitle">{{ a.subtitle }}</h3>{% endif %}
+					{% if a.evsdate or a.evedate %}
+					<p class="als_event">
+						{% if LANGUAGE_CODE == 'ro' %}
+						{% if a.evsdate %}{{ a.evsdate|date:'d F Y' }} ora: {{ a.evsdate|date:'H:i' }}{% endif %}
+						{% if a.evedate %} &ndash; {% if a.evsdate|date:'d F Y' == a.evedate|date:'d F Y' %} {{ a.evedate|date:'H:i' }}{% else %}{{ a.evedate|date:'d F Y' }} ora: {{ a.evedate|date:'H:i' }}{% endif %}{% endif %}
+						{% else %}
+						{% if a.evsdate %}{{ a.evsdate|date:'F d, Y' }} H: {{ a.evsdate|date:'H:i' }}{% endif %}
+						{% if a.evedate %} &ndash; {% if a.evsdate|date:'F d, Y' == a.evedate|date:'F d, Y' %} {{ a.evedate|date:'H:i' }}{% else %}{{ a.evedate|date:'F d, Y' }} H: {{ a.evedate|date:'H:i' }}{% endif %}{% endif %}
+						{% endif %}
+						{% if a.evlocation %}
+						<br>{% if LANGUAGE_CODE == 'ro' %}Locație: {% else %}Location: {% endif %} {{ a.evlocation|striptags }}{% endif %}
+					</p>
+					{% endif %}
+					{% if a.image or a.img_url %}
+					<p class="article_image">
+						<img src="{% if a.image %}{{ a.image.url }}{% elif a.img_url %}{{ a.remote_image_url }}{% endif %}" alt="{{ a.title }}">
+					</p>
+					{% endif %}
+					{% if a.summary %}
+					<div class="article_summary">
+						{{ a.summary|safe }}
+					</div>
+					{% endif %}
+					<div class="article_text">
+						{{ a.text|safe }}
+					</div>
+					<p id="article_meta">
+						{% if LANGUAGE_CODE == 'ro' %}Publicat în data de {{ a.date|date:'d F Y' }}, {{ a.date|date:'H:i' }}{% else %}Published on {{ a.date|date:'F d, Y' }}, {{ a.date|date:'H:i' }}{% endif %}.
+					</p>
+				</article>
+			</div>
+		</div>
+{% endblock content %}

@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load members_tags %}
+
+{% block meta %}
+		<title>{{ m.get_full_name }} | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro{{ m.get_absolute_url }}">
+		<meta name="robots" content="index, follow">
+{% endblock meta %}
+{% load members_tags %}
+
+{% block bodyclass %}member{% endblock bodyclass %}
+
+{% block content %}
+		<div class="page container clearfix">
+			<div id="sidebar" class="left grid_4 alpha">
+				{% if mbs %}
+					<h3 id="sidebar_title" class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Toți membrii{% else %}All members{% endif %}</h3>
+					{% regroup mbs by name|slice:":1" as letter_list %}
+					<ul id="archives">
+						{% for letter in letter_list %}
+							<li class="archivesli">
+								<h4><b>{{ letter.grouper }}</b></h4>
+								 <ul>
+									{% for m in letter.list %}
+									<li>
+										<a href="{{ m.get_absolute_url }}">{{ m.get_full_name }}{% if m.r.shortname %}, {{ m.r.shortname }}{% endif %}</a>
+									</li>
+									{% endfor %}
+								</ul><br>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</div>
+			<div id="main" class="right grid_12 omega">
+				<h3 class="heading_bg salmon clearfix">
+					{{ m.r.name }}
+					<a id="back_link" class="darkgreen right" href="{% url members %}">&lt; {% if LANGUAGE_CODE == 'ro' %}Înapoi{% else %}Back{% endif %}</a>
+				</h3>
+				<article id="m_article">
+					<div id="m_info" class="clearfix">
+						<div class="grid_4 left alpha">
+
+								<img src="{% if m.image %}{% if m.thumbnail %}{{ m.thumbnail.url }}{% else %}{{ m.image.url }}{% endif %}{% elif m.img_url %}{{ m.remote_image_url }}{% else %}{{ STATIC_URL }}img/member_default.png{% endif %}" alt="{{ m.get_full_name }}" width="220" height="250">
+						</div>
+						<div class="grid_8 left omega">
+							<h1 class="mi_name">{{ m.get_full_name }}</h1>
+							<p class="mi_intro gray">{% if m.r.singular_name %}{{ m.r.singular_name }}{% elif m.r.shortname %}{{ m.r.shortname }}{% endif %}</p><br>
+							{% if m.email %}
+								<p><b>Email</b>: {% encrypt_string m.email %}</p>
+							{% endif %}
+							{% if m.rm.all %}
+								<p>
+									<b>{% if LANGUAGE_CODE == 'ro' %}Birou{% else %}Office{% endif %}</b>:
+									{% for r in m.rm.all %}
+										{% if r.public %}<a href="{{ r.get_absolute_url }}" class="darkgreen">{% if LANGUAGE_CODE == 'ro' %}Sala{% else %}Room{% endif %} {{ r.name }}</a>{% endif %}
+									{% endfor %}
+								</p>
+								{% if i.address %}{{ i.address|safe }}{% else %}Complex LEU, Bd. Iuliu Maniu, nr. 1-3, Sect. 6, 061071, {% if LANGUAGE_CODE == 'ro' %}București{% else %}Bucharest{% endif %}, Romania{% endif %}
+							{% endif %}
+							{% if m.phone %}
+								<p><b>{% if LANGUAGE_CODE == 'ro' %}Telefon{% else %}Phone{% endif %}</b>: {% encrypt_string m.phone %}</p>
+							{% endif %}
+								<p><b>{% if LANGUAGE_CODE == 'ro' %}Website{% else %}Website{% endif %}</b>: <a href="{{ m.img_url }}" class="darkgreen">{{ m.img_url}}</a></p>
+						</div>
+					</div>
+					<section class="m_section">
+						{% if m.coordinator.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Coordonat de{% else %}Coordinated by{% endif %}</b>: {% for c in m.coordinator.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.get_full_name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+						{% if m.coordinees.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Coordonează{% else %}Coordinates{% endif %}</b>: {% for c in m.coordinees.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.get_full_name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+						{% if m.coord_bachelor.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Coordonează lucrările de licență ale studenților{% else %}Undergraduated students coordinated by {{ m.get_full_name }}{% endif %}</b>: {% for c in m.coord_bachelor.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.get_full_name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+						{% if m.mcoord_bachelor.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Lucrare de licență coordonată de{% else %}Graduation thesis coordinated by{% endif %}</b>: {% for c in m.mcoord_bachelor.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.get_full_name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+						{% if m.coord_msc.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Coordonează lucrările de master ale studenților{% else %}MSc students coordinated by {{ m.get_full_name }}{% endif %}</b>: {% for c in m.coord_msc.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.get_full_name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+						{% if m.mcoord_msc.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Lucurare de master coordonată de{% else %}MSc thesis coordinated by{% endif %}</b>: {% for c in m.mcoord_msc.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.get_full_name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+						{% if m.coord_phd.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Coordonează tezele de doctorat ale studenților{% else %}PhD students coordinated by {{ m.get_full_name }}{% endif %}</b>: {% for c in m.coord_phd.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.get_full_name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+						{% if m.mcoord_phd.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Teză de doctorat coordonată de{% else %}PhD thesis coordinated by{% endif %}</b>: {% for c in m.mcoord_phd.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.get_full_name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+						{% if m.ccourses.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Coordonează cursurile{% else %}Coordinates the courses{% endif %}</b>: {% for c in m.ccourses.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+						{% if m.pcourses.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Audiază cursurile{% else %}Attends the courses{% endif %}</b>: {% for c in m.pcourses.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+						{% if m.clabs.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Coordonează laboratoarele{% else %}Coordinates the laboratories{% endif %}</b>: {% for c in m.clabs.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+						{% if m.plabs.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Participă la laboratoarele{% else %}Attends the laboratories{% endif %}</b>: {% for c in m.plabs.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+						{% if m.cprojects.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Coordonează proiectele{% else %}Coordinates the projects{% endif %}</b>: {% for c in m.cprojects.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+						{% if m.pprojects.all %}
+							<p><b>{% if LANGUAGE_CODE == 'ro' %}Participă la proiectele{% else %}Active in the projects{% endif %}</b>: {% for c in m.pprojects.all %}{% if c.public %}<a href="{{ c.get_absolute_url }}" class="darkgreen">{{ c.name }}</a>{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+						{% if not m.faculty and m.attributions %}
+							<br><p class="gray allcaps smaller mr_subtitle">{% if LANGUAGE_CODE == 'ro' %}Atribuții{% else %}Attributions{% endif %}:</p>
+							{{ m.attributions|safe }}
+						{% endif %}
+					</section>
+					{% if m.mpublications.all %}
+						<section class="m_section accordion">
+							<h3 class="m_heading accordion_title">{% if LANGUAGE_CODE == 'ro' %}Publicații{% else %}Publications{% endif %}</h3>
+							<div class="accordion_content">
+								{% regroup m.mpublications.all by year as year_list %}
+								{% for y in year_list reversed %}
+									<h4><b>{{ y.grouper }}</b></h4>
+									{% for p in y.list %}{% if p.public %}
+										<div>
+											<span class="authors">{% for a in p.authors.all %}{{ a.name|upper }}, {{ a.first_name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% if p.oauthors %}, {{ p.oauthors|striptags }}{% endif %}</span>, {% if p.book %}<cite>{% if p.url %}<a href="{{ p.url }}" class="darkgreen">{{ p.title|striptags }}</a>{% else %}{{ p.title|striptags }}{% endif %}</cite>{% else %}"{% if p.url %}<a href="{{ p.url }}" class="darkgreen">{{ p.title|striptags }}</a>{% else %}{{ p.title|striptags }}{% endif %}"{% if p.review %}, <cite>{{ p.review|striptags }}</cite>{% endif %}{% endif %} [{{ p.gen.name }}]
+											{% if p.conference %}
+												<p class="psudolabel"><b>{% if LANGUAGE_CODE == 'ro' %}Conferință:{% else %}Conference:{% endif %}</b></p>
+												{{ p.conference|safe }}
+											{% endif %}
+											{% if user.is_authenticated %}
+												{% if m in p.authors.all or user.is_superuser %}
+													<p><a class="salmon" href="/publicatii/editeaza/{{ p.id }}/">{% if LANGUAGE_CODE == 'ro' %}Editează publicația{% else %}Edit publication{% endif %}</a></p>
+												{% endif %}
+											{% endif %}
+										</div>
+									{% endif %}{% endfor %}
+								{% endfor %}
+							</div>
+						</section>
+					{% endif %}
+					{% if m.degrees %}
+						<section class="m_section accordion">
+							<h3 class="m_heading accordion_title">{% if LANGUAGE_CODE == 'ro' %}Grade academice{% else %}Degrees{% endif %}</h3>
+							<div class="m_text accordion_content">
+								{{ m.degrees|safe }}
+							</div>
+						</section>
+					{% endif %}
+					{% if m.experience %}
+						<section class="m_section accordion">
+							<h3 class="m_heading accordion_title">{% if LANGUAGE_CODE == 'ro' %}Experiență profesională{% else %}Professional Experience{% endif %}</h3>
+							<div class="m_text accordion_content">
+								{{ m.experience|safe }}
+							</div>
+						</section>
+					{% endif %}
+					{% if m.activity %}
+						<section class="m_section accordion">
+							<h3 class="m_heading accordion_title">{% if LANGUAGE_CODE == 'ro' %}Activitate academică{% else %}Academic Activity{% endif %}</h3>
+							<div class="m_text accordion_content">
+								{{ m.activity|safe }}
+							</div>
+						</section>
+					{% endif %}
+					{% if m.notes %}
+						<section class="m_section accordion">
+							<h3 class="m_heading accordion_title">{% if LANGUAGE_CODE == 'ro' %}Note personale{% else %}Personal Notes{% endif %}</h3>
+							<div class="m_text accordion_content">
+								{{ m.notes|safe }}
+							</div>
+						</section>
+					{% endif %}
+				</article>
+			</div>
+		</div>
+{% endblock content %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+		<title>{{ c.name }} | DCAE</title>
+		<link rel="canonical" href="http://www.dcae.pub.ro{{ c.get_absolute_url }}">
+		<meta name="robots" content="index, follow">
+{% endblock meta %}
+
+{% block bodyclass %}course{% endblock bodyclass %}
+
+
+{% block content %}
+		<div class="page container clearfix">
+			<h2 class="ga_title">{% if LANGUAGE_CODE == 'ro' %}Cursuri{% else %}Courses{% endif %}</h2>
+			<div id="sidebar" class="left grid_4 alpha">
+				<h3 id="sidebar_title" class="heading_bg">{% if LANGUAGE_CODE == 'ro' %}Toate cursurile{% else %}All courses{% endif %}</h3>
+				{% if courses %}
+					<ul id="archives">
+						{% for cs in courses %}
+							<li class="archivesli">
+								<a href="{{ cs.get_absolute_url }}">{{ cs.name }}</a>{% if cs.m %} (Master: <a href="{{ cs.m.get_absolute_url }}">{{ cs.m.name }}</a>){% endif %}
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</div>
+			<div id="main" class="right grid_12 omega">
+				<h3 class="heading_bg salmon clearfix">
+					<a id="back_link" class="darkgreen right" href="{% url courses %}">&lt; {% if LANGUAGE_CODE == 'ro' %}Înapoi{% else %}Back{% endif %}</a>
+				</h3>
+				<article class="article_single clearfix">
+					<h1 class="al_title">{{ c.name }} {% if LANGUAGE_CODE == 'ro' and c.ro_url %} <br><span><a href="{{ c.ro_url }}" class="salmon">[Suport curs]</a></span>{% elif LANGUAGE_CODE == 'en' and c.url %}<br><span><a href="{{ c.url }}" class="salmon">[Course materials]</a></span>{% endif %}</h1>
+					<div class="article_text">
+
+						{% if c.coordinators.all %}<p><b>{% if LANGUAGE_CODE == 'ro' %}Coordonat de{% else %}Coordinated by{% endif %}</b>: {% for m in c.coordinators.all %}{% if m.public %}<a href="{{ m.get_absolute_url }}">{{ m.get_full_name }}</a>{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}</p>{% endif %}
+
+						{% if c.m %}<p><b>Master:</b> <a class="darkgreen" href="{{ c.m.get_absolute_url }}">{{ c.m.name }}</a></p>{% endif %}
+
+						{% if c.r.all %}<p><b>{% if LANGUAGE_CODE == 'ro' %}Săli{% else %}Rooms{% endif %}</b>: {% for r in c.r.all %}{% if r.public %}<a href="{{ r.get_absolute_url }}">{{ r.name }}</a>{% endif %}{% endfor %}</p>{% endif %}
+
+						{% if c.description %}
+							<p class="pseudolabel"><b>{% if LANGUAGE_CODE == 'ro' %}Descriere{% else %}Description{% endif %}:</b></p>
+							{{ c.description|safe }}
+						{% endif %}
+
+						{% if c.people.all %}<p><b>{% if LANGUAGE_CODE == 'ro' %}Alți membri ai departamentului implicați în acest curs{% else %}Other department members involved in this course{% endif %}</b>: {% for m in c.people.all %}{% if m.public %}<a href="{{ m.get_absolute_url }}">{{ m.get_full_name }}</a>{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}</p>{% endif %}
+
+					</div>
+				</article>
+			</div>
+		</div>
+{% endblock content %}
